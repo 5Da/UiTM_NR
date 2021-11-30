@@ -125,7 +125,7 @@ const ListAccommodation = ({saved}) => {
             </TouchableOpacity>
             </View>
             
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
             <Divider style={{marginTop: 10}}/>
             <View style={styles.listItems}>
                 <Image 
@@ -139,7 +139,7 @@ const ListAccommodation = ({saved}) => {
                     <Text>Price: RM 500</Text>
                 </View>
             </View>
-            </TouchableOpacity>
+            </TouchableOpacity> 
 
             <TouchableOpacity>
             <Divider style={{marginTop: 10}}/>
@@ -155,8 +155,8 @@ const ListAccommodation = ({saved}) => {
                     <Text>Price: RM 500</Text>
                 </View>
             </View>
-            </TouchableOpacity>
-
+            </TouchableOpacity> */}
+        <Divider style={{marginTop: 10, marginBottom: 10}}/>
         </View>
     )
 }
@@ -166,6 +166,8 @@ export default ListAccommodation
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        height: '100%',
+        backgroundColor: 'white',
     },
     listItems: {
         marginTop: 12,

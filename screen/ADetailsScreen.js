@@ -69,7 +69,7 @@ const ADetailsScreen = () => {
             </View>
             <Divider />
 
-            <View style={styles.contentContainer}>
+            {/* <View style={styles.contentContainer}>
                 <Text>Listing Description</Text>
                 <Text>-asdasdasdasdsadsa </Text>
                 <Text>-asdasdasdasdsadsa </Text>
@@ -96,7 +96,7 @@ const ADetailsScreen = () => {
                 <Text>-asdasdasdasdsadsa </Text>
                 <Text>-asdasdasdasdsadsa </Text>
             </View>
-            <Divider />
+            <Divider /> */}
 
         </ScrollView>
         <View style={styles.bottomWrapper}>
