@@ -17,7 +17,7 @@ const Header = () => {
                 <Image 
                     source={{uri: 'https://img.icons8.com/external-kiranshastry-lineal-kiranshastry/2x/external-filter-interface-kiranshastry-lineal-kiranshastry.png', width: 30, height: 30}}
                     />
-                <Text>Filter</Text>
+                <Text style={{marginRight: 4}}>Filter</Text>
                 </View>
             </TouchableOpacity>
         </View>
@@ -33,15 +33,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingTop: 12,
         paddingBottom: 12,
-        // backgroundColor: '#3461eb',
+        // backgroundColor: 'gray',
         alignItems: 'center',
         borderWidth: 1,
         margin: 5,
+        borderRadius: 20,
     },
     search: {
         flex: 1,
         fontWeight: '600',
         borderRadius: 20,
         backgroundColor: 'white',
+        paddingLeft: 10,
     },
 })
