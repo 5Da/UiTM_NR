@@ -156,7 +156,7 @@ const ListAccommodation = ({saved}) => {
                 </View>
             </View>
             </TouchableOpacity> */}
-        <Divider style={{marginTop: 10, marginBottom: 10}}/>
+        <Divider style={{marginTop: 10, marginBottom: 200}}/>
         </View>
     )
 }
