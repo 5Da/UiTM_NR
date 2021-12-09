@@ -1,16 +1,17 @@
-import React from "react";
-import { StyleSheet, Text, View, SafeAreaView, SectionList, StatusBar, Pressable, Alert } from "react-native";
-import { Avatar, ListItem } from 'react-native-elements'
-import BottomTabs, { bottomTabIcons } from "../component/home/BottomTabs";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar, Pressable, Alert, TouchableOpacity } from "react-native";
+import { Avatar, ListItem, Switch, Icon } from 'react-native-elements'
 
+import BottomTabs, { bottomTabIcons } from "../component/home/BottomTabs";
 const DATA = [
   {
     title: "My Account",
-    data: ["Name", "IC", "Gender"]
+    icon: 'account' ,
+    data: ["Name", "IC", "Gender", 'Edit Profile']
   },
   {
-    title: "Settings",
-    data: ["French Fries", "Onion Rings", "Fried Shrimps"]
+    title: "Notification",
+    data: ['Push Notification']
   },
   {
     title: "Support",
@@ -21,12 +22,6 @@ const DATA = [
     data: ["Term of Service", "Contact Us", 'Privacy Policy']
   }
 ];
-
-const Item = ({ title }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-  </View>
-);
 
 const logOutAlert = () =>
     Alert.alert(
@@ -42,22 +37,40 @@ const logOutAlert = () =>
       ]
     );
 
+    const Item = ({ title }) => (
+      <View style={styles.item}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+    );
 
-const App = () => (
-  <SafeAreaView style={styles.container}>
+const App = ({navigation}) => {
+  const [expanded, setExpanded] = React.useState(false);
+  const handlePress = () => setExpanded(!expanded);
+
+  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+  function renderItem({ item }) {
+    return (
+      <Item item={item} title={item.title} />
+      // {item.title === 'Notification' ? <Switch style={{ position: 'absolute', right: 20, top: 40 }} value={isSwitchOn} onValueChange={onToggleSwitch} /> : null}
+    );
+  }
+
+  return(
+      <SafeAreaView style={styles.container}>
         <View>
         <ListItem>
         <Avatar
             size= 'xlarge'
-            title= "MF"
             activeOpacity={0.7}
             rounded
-            source={{ uri: 'https://bbts1.azureedge.net/images/p/full/2019/01/0c18c2b0-0631-49a4-9a63-4fb5b5848d83.jpg'}}
+            title= 'MF'
+            source={{ uri: 'https://wallpaperaccess.com/full/3421978.jpg' }}
         />
-        <ListItem.Content style={{zIndex: 0}}>
-            
+        <ListItem.Content > 
             <ListItem.Title>Muhammad Faidhi</ListItem.Title>
-            <ListItem.Subtitle>Tenant</ListItem.Subtitle>
+            <ListItem.Subtitle>Tenant / Landlord</ListItem.Subtitle>
             <ListItem.Subtitle >IC </ListItem.Subtitle>
             <ListItem.Subtitle>Male</ListItem.Subtitle>
             <ListItem.Subtitle>
@@ -68,45 +81,43 @@ const App = () => (
             </View>
             </ListItem.Subtitle>
             
-        </ListItem.Content>
-        <ListItem.Chevron/>
-        </ListItem>
+          </ListItem.Content>
+          <ListItem.Chevron/>
+          </ListItem>
         </View>
-            
 
-    <SectionList 
-      sections={DATA}
-      keyExtractor={(item, index) => item + index}
-      renderItem={({ item }) => <Item title={item} />}
-      renderSectionHeader={({ section: { title } }) => (
-        <Text style={styles.header}>{title}</Text>
-      )}
-    />
-    
-    <View style={{flex :1}}>
-    <BottomTabs icons ={bottomTabIcons}/>
-    </View>
+      <FlatList
+      data={DATA}
+      renderItem={renderItem}
+      keyExtractor={item => item.id}
+      />
+  
+        {/* <Switch value={isSwitchOn} onValueChange={onToggleSwitch} /> */}
+      {/* <Switch style={{ position: 'absolute', right: 20, top: 40 }} value={isSwitchOn} onValueChange={onToggleSwitch} /> */}
 
-  </SafeAreaView>
-);
+      <BottomTabs icons ={bottomTabIcons} navigation={navigation}/>
+      </SafeAreaView>
+)}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight,
+    paddingTop: StatusBar.currentHeight || 0,
   
-  },
-  item: {
-    backgroundColor: "gray",
-    padding: 20,
-    marginVertical: 8
   },
   header: {
     fontSize: 30,
     backgroundColor: "#fff"
   },
+  item: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    opacity: 0.7,
+  },
   title: {
-    fontSize: 24
+    fontSize: 28,
   },
   buttonLogOut: {
     fontSize: 10,

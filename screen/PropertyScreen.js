@@ -7,7 +7,8 @@ import Landlord from '../component/Landlord'
 import { SpeedDial } from 'react-native-elements'
 
 const saved = true
-const statusTenant = false
+// change tenant status to view tenant property screen or landlord
+const statusTenant = true
 const image = { uri : 'https://vectorseek.com/wp-content/uploads/2021/02/UiTM-Logo-Vector.jpg'}
 
 const speedDial = ({open, setOpen}) => (
@@ -35,18 +36,25 @@ const speedDial = ({open, setOpen}) => (
     </SpeedDial>
 )
 
-const PropertyScreen = () => {
+const PropertyScreen = ({navigation}) => {
     const [open, setOpen] = React.useState(false)
     return (
         <ImageBackground source={image}  style={styles.image} >
         <SafeAreaView style={styles.container}>
                 <Header />
                 <ScrollView >
-                    {statusTenant ? <ListAccommodation saved ={saved}/> : <Landlord />}
+                    {statusTenant ? <ListAccommodation save ={saved} navigation={navigation}/> : <Landlord navigation={navigation}/>}
                 <View style={{marginBottom: 50}}/>
                 </ScrollView>
                 { statusTenant ? null : speedDial({open,setOpen}) }
-                <BottomTabs icons ={bottomTabIcons} />
+                <View style={{flex: 1, backgroundColor : 'red'}} />
+                <View style={{flex: 1, backgroundColor : 'red'}} />
+                <View style={{flex: 1, backgroundColor : 'red'}} />
+                <View style={{flex: 1, backgroundColor : 'red'}} />
+                <View style={{flex: 1, backgroundColor : 'red'}} />
+                <View style={{flex: 1, backgroundColor : 'red'}} />
+
+                <BottomTabs icons ={bottomTabIcons} navigation={navigation}/>
         </SafeAreaView>
         </ImageBackground>    
 

@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Divider } from 'react-native-elements'
+import HomeScreen from '../../screen/HomeScreen'
 
 export const bottomTabIcons = [
     {
@@ -9,7 +10,7 @@ export const bottomTabIcons = [
         inactive: 'https://img.icons8.com/ios-glyphs/2x/ffffff/home.png',
     },
     {
-        name: 'Save',
+        name: 'Property',
         active: 'https://img.icons8.com/ios-filled/2x/ffffff/add.png',
         inactive: 'https://img.icons8.com/ios-glyphs/2x/ffffff/add.png',
     },
@@ -23,21 +24,26 @@ export const bottomTabIcons = [
 
 
     
-const BottomTabs = ({icons}) => {
+const BottomTabs = ({navigation, icons}) => {
     const [activeTab, setActiveTab] = useState('Home')
-    const Icon = ({icon}) => (
-    
-    
-        <TouchableOpacity onPress={() => setActiveTab(icon.name)} >
+    const Icon = ({icon, index}) => (
+        <TouchableOpacity onPress= {()=>  setActiveTab(...icon.name)}>
+        <TouchableOpacity key ={index}
+        onPress={() =>  navigation.navigate(icon.name)} 
+        
+        >
             <Image 
                 source= {{uri: activeTab === icon.name ? icon.active : icon.inactive}} 
                 style={
                     styles.icon
                 }
-            />
-        <View><Text style={{color: 'white'}}>{icon.name}</Text></View>
+                />
+        <View ><Text style={{color: 'white'}}>{icon.name}</Text></View>
         </TouchableOpacity>
+        </TouchableOpacity>
+
     )
+    
     return (
         
         <View style={styles.wrapper}>

@@ -2,17 +2,29 @@ import React from 'react'
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { Divider, Button, Icon} from 'react-native-elements'
 import { FontAwesome } from '@expo/vector-icons';
-
+import Swiper from '../component/Swiper';
+export const data = [
+    // 'https://i0.wp.com/tokusatsunetwork.com/wp-content/uploads/2020/01/622207C2-66FC-4E40-8ACE-93451C2B692F.jpeg?resize=500%2C500',
+    // 'https://i1.sndcdn.com/artworks-nTBzTVq3mDNiozoc-sJRrSA-t500x500.jpg',
+    // 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRuOSRAQwUl81m6VATDRI9uxRKarwZWEx1tg&usqp=CAU',
+    // 'https://static.myfigurecollection.net/pics/figure/large/849650.jpg?rev=1559580141',
+    'https://picsum.photos/500/490',
+    'https://picsum.photos/500/520',
+    'https://picsum.photos/500/500',
+    'https://picsum.photos/500/510',
+    'https://picsum.photos/500/480',
+ ]
 const verificationStatus ='true'
 
 const ADetailsScreen = () => {
     return (
         <SafeAreaView style={{flex: 1}}>
             <ScrollView>
-            <Image 
+            <Swiper data={data}/>    
+            {/* <Image 
                     style={styles.image}
                     source={{uri : 'https://picsum.photos/1000/1300',}}
-                />
+                /> */}
     
             <View style={styles.buttonContainer}>
                 {verificationStatus != 'false' ? <Button title='Verified' style={styles.buttonVerification}/> : null }
@@ -30,13 +42,19 @@ const ADetailsScreen = () => {
             <Divider />
 
             <View style={styles.contentContainer}>
-                <Text>Whole Unit</Text>
+                <Text>Whole Unit / Room Rental</Text>
             </View>
             <Divider />
 
             <View style={styles.contentContainer}>
                 <Text>Listing Title</Text>
                 <Text style={{fontWeight: 'bold', fontSize: 20}}>Vista Alam</Text>
+            </View>
+            <Divider />
+
+            <View style={styles.contentContainer}>
+                <Text>Property Type</Text>
+                <Text>Apartment/ Condo/ Bungalow </Text>
             </View>
             <Divider />
 
@@ -69,13 +87,6 @@ const ADetailsScreen = () => {
             </View>
             <Divider />
 
-            {/* <View style={styles.contentContainer}>
-                <Text>Listing Description</Text>
-                <Text>-asdasdasdasdsadsa </Text>
-                <Text>-asdasdasdasdsadsa </Text>
-                <Text>-asdasdasdasdsadsa </Text>
-            </View>
-            <Divider />
             <View style={styles.contentContainer}>
                 <Text>Listing Description</Text>
                 <Text>-asdasdasdasdsadsa </Text>
@@ -96,7 +107,14 @@ const ADetailsScreen = () => {
                 <Text>-asdasdasdasdsadsa </Text>
                 <Text>-asdasdasdasdsadsa </Text>
             </View>
-            <Divider /> */}
+            <Divider />
+            <View style={styles.contentContainer}>
+                <Text>Listing Description</Text>
+                <Text>-asdasdasdasdsadsa </Text>
+                <Text>-asdasdasdasdsadsa </Text>
+                <Text>-asdasdasdasdsadsa </Text>
+            </View>
+            <Divider />
 
         </ScrollView>
         <View style={styles.bottomWrapper}>
