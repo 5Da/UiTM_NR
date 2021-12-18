@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar, Pressable, Alert, TouchableOpacity } from "react-native";
 import { Avatar, ListItem, Switch, Icon } from 'react-native-elements'
-
 import BottomTabs, { bottomTabIcons } from "../component/home/BottomTabs";
+import { auth } from "../firebase";
 const DATA = [
   {
     title: "My Account",
@@ -23,7 +23,24 @@ const DATA = [
   }
 ];
 
-const logOutAlert = () =>
+
+
+    const Item = ({ title }) => (
+      <View style={styles.item}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+    );
+
+    
+
+const App = ({navigation}) => {
+  const [expanded, setExpanded] = React.useState(false);
+  const handlePress = () => setExpanded(!expanded);
+
+  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+  const logOutAlert = () =>
     Alert.alert(
         "Log Out?",
       "You sure want to Log Out?",
@@ -33,22 +50,16 @@ const logOutAlert = () =>
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
+        { text: "OK", onPress: signOutUser() && console.log("ok Pressed")}
       ]
     );
 
-    const Item = ({ title }) => (
-      <View style={styles.item}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
-    );
-
-const App = ({navigation}) => {
-  const [expanded, setExpanded] = React.useState(false);
-  const handlePress = () => setExpanded(!expanded);
-
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+    const signOutUser = () => {
+      // change authenthication state
+      auth.signOut().then( () => {
+          navigation.replace("Login")
+      })
+  }
 
   function renderItem({ item }) {
     return (

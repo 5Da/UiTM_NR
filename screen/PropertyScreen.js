@@ -43,7 +43,8 @@ const PropertyScreen = ({navigation}) => {
         <SafeAreaView style={styles.container}>
                 <Header />
                 <ScrollView >
-                    {statusTenant ? <ListAccommodation save ={saved} navigation={navigation}/> : <Landlord navigation={navigation}/>}
+                {console.log('Status tenant: ' + statusTenant)}
+                    { statusTenant ? <ListAccommodation save ={saved} navigation={navigation}/> : <Landlord navigation={navigation}/>}
                 <View style={{marginBottom: 50}}/>
                 </ScrollView>
                 { statusTenant ? null : speedDial({open,setOpen}) }
