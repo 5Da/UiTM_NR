@@ -8,7 +8,7 @@ import { SpeedDial } from 'react-native-elements'
 
 const saved = true
 // change tenant status to view tenant property screen or landlord
-const statusTenant = true
+const statusTenant = false
 const image = { uri : 'https://vectorseek.com/wp-content/uploads/2021/02/UiTM-Logo-Vector.jpg'}
 
 const speedDial = ({open, setOpen}) => (

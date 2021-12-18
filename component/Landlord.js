@@ -1,23 +1,49 @@
-import React from 'react'
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
+import { Dimensions, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Button, Divider, Icon, ListItem } from 'react-native-elements'
 import { SpeedDial } from 'react-native-elements'
+import SimpleModal from './SimpleModal'
 
 const verificationStatus = true
 
+const device_width = Dimensions.get('window').width
+const device_height = Dimensions.get('window').height
+
+
 const Landlord = () => {
+    const [isModalVisible, setIsModalVisible] = useState(false)
+
+    const handleOnClose = () => setIsModalVisible(false);
     // const [open, setOpen] = React.useState(false)
     return (
         <ScrollView >
             <View>
             
                 <View style={{backgroundColor: 'gray'}}>
-                    <TouchableOpacity style={styles.addProperties}>
+                    <TouchableOpacity 
+                        style={styles.addProperties}
+                        onPress={() => setIsModalVisible(true)}
+                    >
                     <Text style={styles.addContent}>ADD NEW PROPERTY</Text>
                     <Icon name='pluscircleo' type='antdesign' style={styles.addIconContent}/>
                     <Text></Text>
                     </TouchableOpacity>
                 </View>
+
+                <Modal
+                    visible={isModalVisible}
+                    animationType= 'slide'
+                    presentationStyle= 'formSheet'
+                    transparent = {false}
+                >
+                    <Text style={{fontSize: 20, marginBottom: 20}}> Sample Title Modal </Text>
+                    
+                    <TouchableOpacity style={{backgroundColor: 'red'}}
+                    onPress={() => setIsModalVisible(!isModalVisible)}
+                    >
+                    <Text> Close Modal</Text>
+                    </TouchableOpacity>
+                </Modal>
 
                     {/* <Icon name='pluscircleo' type='antdesign' /> */}
                 <View style={styles.textContainer}>
@@ -72,7 +98,7 @@ const Landlord = () => {
                     </ListItem.Swipeable>
                 </View>
 
-                <View style={styles.propertyList}>
+                {/* <View style={styles.propertyList}>
                     <ListItem.Swipeable 
                     leftContent={ 
                     <View style={{ justifyContent: 'center', alignItems: 'center', top: '25%', backgroundColor: 'pink'}}>
@@ -166,7 +192,7 @@ const Landlord = () => {
                     </ListItem.Content>
                     <ListItem.Chevron />
                     </ListItem.Swipeable>
-                </View>
+                </View> */}
                 {/* <View style={styles.propertyList}>
                     <ListItem.Swipeable 
                     leftContent={ 
