@@ -60,8 +60,8 @@ export default function App() {
   //console.log(require("./assets/icon.png"));
   return (
       <NavigationContainer>
-         {/* {isAuthenticated ? <UserScreen /> : <AuthScreen />}    */}
-         <Landlord/>
+         {isAuthenticated ? <UserScreen /> : <AuthScreen />}   
+         {/* <Landlord/> */}
       </NavigationContainer>
       // <NavigationContainer>
       //       <AdminScreens />

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Dimensions, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Button, Divider, Icon, ListItem } from 'react-native-elements'
 import { SpeedDial } from 'react-native-elements'
-import SimpleModal from './SimpleModal'
+import AddPropertyModal from './AddPropertyModal'
 
 const verificationStatus = true
 
@@ -10,7 +10,7 @@ const device_width = Dimensions.get('window').width
 const device_height = Dimensions.get('window').height
 
 
-const Landlord = () => {
+const Landlord = ({navigation}) => {
     const [isModalVisible, setIsModalVisible] = useState(false)
 
     const handleOnClose = () => setIsModalVisible(false);
@@ -30,27 +30,17 @@ const Landlord = () => {
                     </TouchableOpacity>
                 </View>
 
-                <Modal
+                <AddPropertyModal 
                     visible={isModalVisible}
-                    animationType= 'slide'
-                    presentationStyle= 'formSheet'
-                    transparent = {false}
-                >
-                    <Text style={{fontSize: 20, marginBottom: 20}}> Sample Title Modal </Text>
-                    
-                    <TouchableOpacity style={{backgroundColor: 'red'}}
-                    onPress={() => setIsModalVisible(!isModalVisible)}
-                    >
-                    <Text> Close Modal</Text>
-                    </TouchableOpacity>
-                </Modal>
+                    onClose={handleOnClose}
+                />
 
                     {/* <Icon name='pluscircleo' type='antdesign' /> */}
                 <View style={styles.textContainer}>
                     <Text style={{fontSize: 30}}> List of Properties </Text>
                 </View>
 
-                <View style={styles.propertyList}>
+                <View style={styles.propertyList} >
                     <ListItem.Swipeable 
                     leftContent={ 
                     <View style={{ justifyContent: 'center', alignItems: 'center', top: '25%', backgroundColor: 'pink'}}>
@@ -76,7 +66,8 @@ const Landlord = () => {
                     }
                     >
                     <ListItem.Content style={styles.listPropertyContainer}>
-                            <TouchableOpacity style={styles.listPropertyContainer}>
+                        {/* ///////////////////////////////hereeeee///////////////////////// */}
+                            <TouchableOpacity style={styles.listPropertyContainer} onPress={() => navigation.navigate('ADetails')}>
                             <View style={styles.listItems}>
                                 <Image 
                                     style={styles.image}

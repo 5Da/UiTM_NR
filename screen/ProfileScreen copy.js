@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar, Pressable, Alert, TouchableOpacity } from "react-native";
-import { Avatar, ListItem, Switch, Icon, BottomSheet } from 'react-native-elements'
+import { Avatar, ListItem, Switch, Icon } from 'react-native-elements'
 import BottomTabs, { bottomTabIcons } from "../component/home/BottomTabs";
 import { auth } from "../firebase";
 const DATA = [
@@ -29,7 +29,6 @@ const DATA = [
 
 
 
-
     const Item = ({ item, onPress, backgroundColor, textColor }) => (
       <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
         <Text style={styles.title}>{item.title}</Text>
@@ -46,19 +45,6 @@ const App = ({navigation}) => {
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn)
 
   const [selectedId, setSelectedId] = useState(null)
-
-  const [isVisible, setIsVisible] = useState(false);
-
-  const list = [
-    { title: 'Take Photo' },
-    { title: 'Choose Image from gallery' },
-    {
-      title: 'Cancel',
-      containerStyle: { backgroundColor: 'red' },
-      titleStyle: { color: 'white' },
-      onPress: () => setIsVisible(false),
-    },
-  ];
 
   const logOutAlert = () =>
     Alert.alert(
@@ -100,16 +86,13 @@ const App = ({navigation}) => {
       <SafeAreaView style={styles.container}>
         <View>
         <ListItem>
-        <TouchableOpacity onPress={() => setIsVisible(true)}>
         <Avatar
             size= 'xlarge'
             activeOpacity={0.7}
             rounded
             title= 'MF'
             source={{ uri: 'https://wallpaperaccess.com/full/3421978.jpg' }}
-            />
-        </TouchableOpacity>
-
+        />
         <ListItem.Content > 
             <ListItem.Title>Muhammad Faidhi</ListItem.Title>
             <ListItem.Subtitle>Tenant / Landlord</ListItem.Subtitle>
@@ -138,20 +121,6 @@ const App = ({navigation}) => {
         {/* <Switch value={isSwitchOn} onValueChange={onToggleSwitch} /> */}
       {/* <Switch style={{ position: 'absolute', right: 20, top: 40 }} value={isSwitchOn} onValueChange={onToggleSwitch} /> */}
 
-
-      
-        <BottomSheet
-          isVisible={isVisible}
-          containerStyle={{ backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)' }}
-        >
-          {list.map((l, i) => (
-            <ListItem key={i} containerStyle={l.containerStyle} onPress={l.onPress}>
-              <ListItem.Content>
-                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-          ))}
-        </BottomSheet>
       <BottomTabs icons ={bottomTabIcons} navigation={navigation}/>
       </SafeAreaView>
 )}

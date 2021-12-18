@@ -26,10 +26,15 @@ export const bottomTabIcons = [
     
 const BottomTabs = ({navigation, icons}) => {
     const [activeTab, setActiveTab] = useState('Home')
-    const Icon = ({icon, index}) => (
-        <TouchableOpacity onPress= {()=>  setActiveTab(...icon.name)}>
-        <TouchableOpacity key ={index}
-        onPress={() =>  navigation.navigate(icon.name)} 
+    const Icon = ({icon}) => (
+        
+        
+
+        <TouchableOpacity 
+        onPress={() =>  (
+            setActiveTab(icon.name),
+            navigation.navigate(icon.name) )
+            } 
         
         >
             <Image 
@@ -40,7 +45,7 @@ const BottomTabs = ({navigation, icons}) => {
                 />
         <View ><Text style={{color: 'white'}}>{icon.name}</Text></View>
         </TouchableOpacity>
-        </TouchableOpacity>
+
 
     )
     
@@ -48,7 +53,8 @@ const BottomTabs = ({navigation, icons}) => {
         
         <View style={styles.wrapper}>
             <Divider width={1} orientation= 'vertical' />
-            <View style={styles.container}>
+            <View style={styles.container} onPress={() =>  
+            navigation.navigate(icon.name)} >
                 {icons.map((icon, index) => (
                     <Icon key={index} icon={icon} />
                     ))}
@@ -61,6 +67,7 @@ export default BottomTabs
 
 const styles = StyleSheet.create({
     wrapper: {
+        marginTop: 20,
         position: 'absolute',
         width: '100%',
         bottom: '0%',

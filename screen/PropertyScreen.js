@@ -48,12 +48,7 @@ const PropertyScreen = ({navigation}) => {
                 <View style={{marginBottom: 50}}/>
                 </ScrollView>
                 { statusTenant ? null : speedDial({open,setOpen}) }
-                <View style={{flex: 1, backgroundColor : 'red'}} />
-                <View style={{flex: 1, backgroundColor : 'red'}} />
-                <View style={{flex: 1, backgroundColor : 'red'}} />
-                <View style={{flex: 1, backgroundColor : 'red'}} />
-                <View style={{flex: 1, backgroundColor : 'red'}} />
-                <View style={{flex: 1, backgroundColor : 'red'}} />
+                
 
                 <BottomTabs icons ={bottomTabIcons} navigation={navigation}/>
         </SafeAreaView>
