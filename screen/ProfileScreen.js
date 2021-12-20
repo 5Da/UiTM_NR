@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar, Pressable, Alert, TouchableOpacity } from "react-native";
 import { Avatar, ListItem, Switch, Icon, BottomSheet } from 'react-native-elements'
 import BottomTabs, { bottomTabIcons } from "../component/home/BottomTabs";
+import ImagePicker2 from "../component/ImagePicker2";
 import { auth } from "../firebase";
 const DATA = [
   {
@@ -29,7 +30,7 @@ const DATA = [
 
 
 
-
+    // display item in flatlist
     const Item = ({ item, onPress, backgroundColor, textColor }) => (
       <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
         <Text style={styles.title}>{item.title}</Text>
@@ -37,28 +38,32 @@ const DATA = [
     );
 
     
+    const App = ({navigation}) => {
+      const [expanded, setExpanded] = React.useState(false)
+      const handlePress = () => setExpanded(!expanded)
+      
+      // const [isSwitchOn, setIsSwitchOn] = React.useState(false)
+      // const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn)
+      
+      const [selectedId, setSelectedId] = useState(null)
+      
+      const [isVisible, setIsVisible] = useState(false);
+      const handleOnClose = () => setIsVisible(!isVisible);
 
-const App = ({navigation}) => {
-  const [expanded, setExpanded] = React.useState(false)
-  const handlePress = () => setExpanded(!expanded)
 
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false)
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn)
-
-  const [selectedId, setSelectedId] = useState(null)
-
-  const [isVisible, setIsVisible] = useState(false);
-
-  const list = [
-    { title: 'Take Photo' },
-    { title: 'Choose Image from gallery' },
-    {
-      title: 'Cancel',
-      containerStyle: { backgroundColor: 'red' },
-      titleStyle: { color: 'white' },
-      onPress: () => setIsVisible(false),
-    },
-  ];
+  // from bottomshet punya data
+  // const list = [
+  //   { title: 'Take Photo' },
+  //   { title: 'Choose Image from gallery', 
+  //     onPress: () => PickImage
+  //   },
+  //   {
+  //     title: 'Cancel',
+  //     containerStyle: { backgroundColor: 'red' },
+  //     titleStyle: { color: 'white' },
+  //     onPress: () => setIsVisible(false),
+  //   },
+  // ];
 
   const logOutAlert = () =>
     Alert.alert(
@@ -70,7 +75,7 @@ const App = ({navigation}) => {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
-        { text: "OK", onPress: signOutUser() && console.log("ok Pressed")}
+        { text: "OK", onPress: () => signOutUser() && console.log("ok Pressed")}
       ]
     );
 
@@ -81,8 +86,9 @@ const App = ({navigation}) => {
       })
   }
 
+  //re rendering the flatlist
   const renderItem = ({ item }) =>  {
-    const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
+    const backgroundColor = item.id === selectedId ? "#CCE3DE" : "#16324F";
     const color = item.id === selectedId ? 'white' : 'black';
     return (
       <Item 
@@ -96,6 +102,7 @@ const App = ({navigation}) => {
     );
   }
 
+
   return(
       <SafeAreaView style={styles.container}>
         <View>
@@ -106,7 +113,7 @@ const App = ({navigation}) => {
             activeOpacity={0.7}
             rounded
             title= 'MF'
-            source={{ uri: 'https://wallpaperaccess.com/full/3421978.jpg' }}
+            source={{ uri: auth?.currentUser?.photoURL || 'https://wallpaperaccess.com/full/3421978.jpg' }}
             />
         </TouchableOpacity>
 
@@ -118,7 +125,7 @@ const App = ({navigation}) => {
             <ListItem.Subtitle>
             <View style={{marginTop : 5}}>
                 <Pressable style={styles.buttonLogOut} >
-                    <Text onPress={logOutAlert}> LOG OUT </Text>
+                    <Text onPress={logOutAlert} style={{color: 'white'}}> LOG OUT </Text>
                 </Pressable>
             </View>
             </ListItem.Subtitle>
@@ -134,16 +141,33 @@ const App = ({navigation}) => {
       keyExtractor={(item) => item.id}
       extraData={selectedId}
       />
+      {/* <FlatList
+      data={DATA}
+      renderItem={({ item }) =>  {
+        const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#16324F";
+        const color = item.id === selectedId ? 'white' : 'black';
+        return (
+          <Item 
+            item={item} 
+            title={item.title}
+            onPress={() => setSelectedId(item.id)}
+            backgroundColor={{ backgroundColor }}
+            textColor={{ color }}
+            />
+        );
+      }}
+      keyExtractor={(item) => item.id}
+      extraData={selectedId}
+      /> */}
   
         {/* <Switch value={isSwitchOn} onValueChange={onToggleSwitch} /> */}
       {/* <Switch style={{ position: 'absolute', right: 20, top: 40 }} value={isSwitchOn} onValueChange={onToggleSwitch} /> */}
 
-
-      
-        <BottomSheet
+    {/* <BottomSheet
           isVisible={isVisible}
           containerStyle={{ backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)' }}
         >
+          <ImagePicker2 isVisible={isVisible} onClose={handleOnClose}/>
           {list.map((l, i) => (
             <ListItem key={i} containerStyle={l.containerStyle} onPress={l.onPress}>
               <ListItem.Content>
@@ -151,7 +175,10 @@ const App = ({navigation}) => {
               </ListItem.Content>
             </ListItem>
           ))}
-        </BottomSheet>
+        </BottomSheet> */}
+      
+      <ImagePicker2 isVisible={isVisible} onClose={handleOnClose}/>
+        
       <BottomTabs icons ={bottomTabIcons} navigation={navigation}/>
       </SafeAreaView>
 )}
@@ -176,11 +203,14 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   buttonLogOut: {
-    fontSize: 10,
+    fontSize: 8,
     justifyContent: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: '#16324F',
     minHeight: 32,
     marginTop: 5,
+    padding: 5,
+    width: 80,
+    marginLeft: 5,
     borderRadius: 10,
   },
 });

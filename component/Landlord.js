@@ -19,13 +19,14 @@ const Landlord = ({navigation}) => {
         <ScrollView >
             <View>
             
-                <View style={{backgroundColor: 'gray'}}>
+                <View style={{backgroundColor: '#465362'}}>
                     <TouchableOpacity 
                         style={styles.addProperties}
                         onPress={() => setIsModalVisible(true)}
                     >
                     <Text style={styles.addContent}>ADD NEW PROPERTY</Text>
-                    <Icon name='pluscircleo' type='antdesign' style={styles.addIconContent}/>
+                    <Image source= {{uri: 'https://img.icons8.com/ios-glyphs/2x/ffffff/add.png'}} style={styles.addIconContent}/>
+                    {/* <Icon name='pluscircleo' type='antdesign' style={styles.addIconContent}/> */}
                     <Text></Text>
                     </TouchableOpacity>
                 </View>
@@ -43,7 +44,7 @@ const Landlord = ({navigation}) => {
                 <View style={styles.propertyList} >
                     <ListItem.Swipeable 
                     leftContent={ 
-                    <View style={{ justifyContent: 'center', alignItems: 'center', top: '25%', backgroundColor: 'pink'}}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', top: '25%', backgroundColor: '#CCE3DE'}}>
                     <Button 
                     title="Info"
                     icon={{ name: 'info', color: 'white' }}
@@ -52,7 +53,7 @@ const Landlord = ({navigation}) => {
                     </View>
                     }
                     rightContent={
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'pink', top: '25%'}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: '#CCE3DE', top: '25%'}}>
                     <Button 
                         // title="Edit"
                         icon={{ name: 'edit', color: 'white' }}
@@ -264,20 +265,24 @@ const styles = StyleSheet.create({
     addProperties: {
         flexDirection: 'row',
         margin: 8,
-        backgroundColor : 'blue',
+        backgroundColor : '#16324F',
         width: 200,
         borderRadius : 20,
     },
     addContent: {
         margin: 5,
         padding: 7,
+        paddingLeft: 10,
+        color: 'white'
     },
     addIconContent: {
-        marginTop: 10,
+        marginTop: 11,
+        width: 20, 
+        height:23
         
     },
     textContainer: {
-        // marginTop: 10,
+        marginTop: 6,
         borderWidth: 0.5,
         alignItems: 'center',
         fontWeight: '800',

@@ -68,7 +68,7 @@ const App = ({navigation}) => {
   }
 
   const renderItem = ({ item }) =>  {
-    const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
+    const backgroundColor = item.id === selectedId ? "#16324F" : "#f9c2ff";
     const color = item.id === selectedId ? 'white' : 'black';
     return (
       <Item 

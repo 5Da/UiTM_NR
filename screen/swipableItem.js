@@ -17,7 +17,7 @@ const TestScreen = () => {
             />
             }
             rightContent={
-            <View style={{flexDirection: 'row', justifyContent: 'space-around', margin: 4, backgroundColor: 'pink'}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-around', margin: 4, backgroundColor: '#CCE3DE'}}>
                 <Button 
                     // title="Edit"
                     icon={{ name: 'edit', color: 'white' }}

@@ -36,7 +36,7 @@ const LoginScreen = ( {navigation}) => {
             <Image source={{
                 uri: 'https://nr.uitm.edu.my/images/nr_uitm.jpg',
             }}
-            style={{ width: 150, height:150, marginBottom: 25}}
+            style={{ width: 170, height:160, marginBottom: 25, borderRadius: 10}}
             />
             <Text></Text>
             <View style={styles.inputContainer}>
@@ -57,8 +57,8 @@ const LoginScreen = ( {navigation}) => {
                 onSubmitEditing={signIn}
                 />
             </View>
-            <Button containerStyle={styles.button} onPress={signIn} title="Login"/>
-            <Button onPress={() => navigation.navigate("Register")}  containerStyle={styles.button} type="outline" title="Register"/>
+            <Button containerStyle={styles.button} onPress={signIn} title="Login" type='outline'/>
+            <Button onPress={() => navigation.navigate("Register")}  containerStyle={styles.button2} type='outline' title="Register"/>
           
         </View>
     );
@@ -79,5 +79,12 @@ const styles = StyleSheet.create({
     button: {
         width: 200,
         marginTop: 10,
+        borderRadius: 10,
+        backgroundColor: '#16324F',
+    },
+    button2: {
+        width: 200,
+        marginTop: 10,
+        borderRadius: 10,
     },
 });

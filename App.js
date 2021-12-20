@@ -9,8 +9,9 @@ import ADetailsScreen from './screen/ADetailsScreen';
 import LoginScreen from './screen/LoginScreen';
 import AdminScreen from './screen/AdminScreen';
 import firebase from "firebase/app";
-import "firebase/firestore";
+// import "firebase/firestore";
 import Landlord from './component/Landlord';
+import ImagePicker2 from './component/ImagePicker2';
 // import TestScreen from './screen/TestScreen';
 // import Test2 from './screen/swipableItem';
 // import ListAccommodation from './component/home/ListAccommodation';
@@ -21,7 +22,7 @@ const UserStack = createStackNavigator()
 const AdminStack = createStackNavigator()
 // const statusTenant = true
 const AuthScreen = () => (
-    <AuthStack.Navigator        >
+    <AuthStack.Navigator>
         <AuthStack.Screen name='Login' component= {LoginScreen} />  
     </AuthStack.Navigator>
 )
@@ -36,7 +37,7 @@ const UserScreen = () => (
 )
 
 const AdminScreens = () => (
-    <AdminStack.Navigator        >
+    <AdminStack.Navigator>
       <AdminStack.Screen name='Admin' component= {AdminScreen} />  
     </AdminStack.Navigator>
 )
@@ -61,6 +62,7 @@ export default function App() {
   return (
       <NavigationContainer>
          {isAuthenticated ? <UserScreen /> : <AuthScreen />}   
+         {/* <ImagePicker2 /> */}
          {/* <Landlord/> */}
       </NavigationContainer>
       // <NavigationContainer>

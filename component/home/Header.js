@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'gray',
         alignItems: 'center',
         borderWidth: 1,
-        margin: 5,
+        margin: 4.5,
         borderRadius: 20,
     },
     search: {

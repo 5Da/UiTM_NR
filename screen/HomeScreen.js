@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native'
+import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, View} from 'react-native'
 import BottomTabs, { bottomTabIcons } from '../component/home/BottomTabs'
 import Header from '../component/home/Header'
 import ListAccommodation from '../component/home/ListAccommodation'
@@ -35,7 +35,9 @@ export default HomeScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: Platform.OS === 'android' ? 25 : 0
+        // paddingTop: Platform.OS === 'android' ? 25 : 0
+        paddingTop: StatusBar.currentHeight || 0,
+        backgroundColor: 'white',
         // margin: 5,
     },
 })

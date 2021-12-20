@@ -43,7 +43,7 @@ const BottomTabs = ({navigation, icons}) => {
                     styles.icon
                 }
                 />
-        <View ><Text style={{color: 'white'}}>{icon.name}</Text></View>
+        <View><Text style={{color: 'white'}}>{icon.name}</Text></View>
         </TouchableOpacity>
 
 
@@ -67,13 +67,13 @@ export default BottomTabs
 
 const styles = StyleSheet.create({
     wrapper: {
-        marginTop: 20,
+        marginTop: 15,
         position: 'absolute',
         width: '100%',
         bottom: '0%',
         zIndex: 999,
-        backgroundColor: '#36509c',
-        minHeight: 60,
+        backgroundColor: '#16324F',
+        minHeight: 65,
     },
     
     container: { 

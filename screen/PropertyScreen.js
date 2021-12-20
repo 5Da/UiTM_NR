@@ -1,5 +1,5 @@
 import React from 'react'
-import { ImageBackground, Platform, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native'
+import { ImageBackground, SafeAreaView, ScrollView, StatusBar, StyleSheet, View} from 'react-native'
 import BottomTabs, { bottomTabIcons } from '../component/home/BottomTabs'
 import Header from '../component/home/Header'
 import ListAccommodation from '../component/home/ListAccommodation'
@@ -14,7 +14,7 @@ const image = { uri : 'https://vectorseek.com/wp-content/uploads/2021/02/UiTM-Lo
 const speedDial = ({open, setOpen}) => (
     <SpeedDial 
     style={{bottom: '13%'}}
-    color= {'blue'}
+    color= {'#465362'}
     isOpen={open}
     icon={{ name: 'plus', type: 'feather', color: '#fff' }}
                 openIcon={{ name: 'close', color: '#fff' }}
@@ -22,13 +22,13 @@ const speedDial = ({open, setOpen}) => (
                 onClose={() => setOpen(!open)}
                 >
                 <SpeedDial.Action
-                    color= {'blue'}
+                    color= {'#465362'}
                     icon={{ name: 'add', color: '#fff' }}
                     title="Add New Tenancy Agreement"
                     onPress={() => console.log('Add Something')}
                 />
                 <SpeedDial.Action
-                    color= {'blue'}
+                    color= {'#465362'}
                     icon={{ name: 'edit', color: '#fff' }}
                     title="Edit Agreement"
                     onPress={() => console.log('Edit Something')}
@@ -62,7 +62,7 @@ export default PropertyScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: Platform.OS === 'android' ? 25 : 0,
+        paddingTop: StatusBar.currentHeight || 0,
     },
     image: {
         flex: 1,
