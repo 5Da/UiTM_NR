@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar, Pressable, Alert, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar, Pressable, Alert, TouchableOpacity, Platform, Button } from "react-native";
 import { Avatar, ListItem, Switch, Icon, BottomSheet } from 'react-native-elements'
 import BottomTabs, { bottomTabIcons } from "../component/home/BottomTabs";
 import ImagePicker2 from "../component/ImagePicker2";
@@ -80,6 +80,7 @@ const DATA = [
     );
 
     const signOutUser = () => {
+      
       // change authenthication state
       auth.signOut().then( () => {
           navigation.replace("Login")
@@ -125,8 +126,9 @@ const DATA = [
             <ListItem.Subtitle>
             <View style={{marginTop : 5}}>
                 <Pressable style={styles.buttonLogOut} >
-                    <Text onPress={logOutAlert} style={{color: 'white'}}> LOG OUT </Text>
+                    <Text onPress={signOutUser} style={{color: 'white'}}> LOG OUT </Text>
                 </Pressable>
+                {/* <Button onPress={Platform.OS === 'web' ? signOutUser : logOutAlert} title = 'LOG OUT'/> */}
             </View>
             </ListItem.Subtitle>
             

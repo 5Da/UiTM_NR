@@ -8,7 +8,7 @@ import { SpeedDial } from 'react-native-elements'
 
 const saved = true
 // change tenant status to view tenant property screen or landlord
-const statusTenant = false
+// const statusTenant = false
 const image = { uri : 'https://vectorseek.com/wp-content/uploads/2021/02/UiTM-Logo-Vector.jpg'}
 
 const speedDial = ({open, setOpen}) => (
@@ -36,18 +36,19 @@ const speedDial = ({open, setOpen}) => (
     </SpeedDial>
 )
 
-const PropertyScreen = ({navigation}) => {
+const PropertyScreen = ({navigation, route}) => {
     const [open, setOpen] = React.useState(false)
     return (
         <ImageBackground source={image}  style={styles.image} >
         <SafeAreaView style={styles.container}>
                 <Header />
                 <ScrollView >
-                {console.log('Status tenant: ' + statusTenant)}
-                    { statusTenant ? <ListAccommodation save ={saved} navigation={navigation}/> : <Landlord navigation={navigation}/>}
+                {console.log(route)}
+                    { route.params.userType === 'Tenant' ? <ListAccommodation save ={saved} navigation={navigation}/> : <Landlord navigation={navigation}/>}
                 <View style={{marginBottom: 50}}/>
                 </ScrollView>
-                { statusTenant ? null : speedDial({open,setOpen}) }
+                {/* { statusTenant ? null : speedDial({open,setOpen}) } */}
+                { route.params.userType === 'Tenant' ? null : speedDial({open,setOpen})}
                 
 
                 <BottomTabs icons ={bottomTabIcons} navigation={navigation}/>

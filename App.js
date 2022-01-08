@@ -12,6 +12,8 @@ import firebase from "firebase/app";
 // import "firebase/firestore";
 import Landlord from './component/Landlord';
 import ImagePicker2 from './component/ImagePicker2';
+import RegisterScreen from './screen/RegisterScreen';
+import { db } from './firebase';
 // import TestScreen from './screen/TestScreen';
 // import Test2 from './screen/swipableItem';
 // import ListAccommodation from './component/home/ListAccommodation';
@@ -24,13 +26,14 @@ const AdminStack = createStackNavigator()
 const AuthScreen = () => (
     <AuthStack.Navigator>
         <AuthStack.Screen name='Login' component= {LoginScreen} />  
+        <AuthStack.Screen name='Register' component= {RegisterScreen} />  
     </AuthStack.Navigator>
 )
 
-const UserScreen = () => (
+const UserScreen = ({userType}) => (
     <UserStack.Navigator>
         <UserStack.Screen name='Home' component= {HomeScreen}/>  
-        <UserStack.Screen name='Property' component= {PropertyScreen}/>  
+        <UserStack.Screen name='Property' component= {PropertyScreen} initialParams={{userType: userType}}/>  
         <UserStack.Screen name='Profile' component= {ProfileScreen} />  
         <UserStack.Screen name='ADetails' component= {ADetailsScreen} />  
     </UserStack.Navigator>
@@ -42,15 +45,46 @@ const AdminScreens = () => (
     </AdminStack.Navigator>
 )
 
+// const CheckUser = ({isAuthenticated, userType}) => {
+
+//   if(userType === 'Admin'){
+//     {isAuthenticated ? <AdminScreens /> : <AuthScreen />}
+//   }
+//   else if(userType === 'Tenant'){
+//     {isAuthenticated ? <UserScreen /> : <AuthScreen />}
+//   }
+
+// }
+
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userType, setUserType] = useState('');
+  
 
   useEffect(() => {
     if (firebase.auth().currentUser) {
         setIsAuthenticated(true);
-    }
-    firebase.auth().onAuthStateChanged((user) => {
+      }
+      firebase.auth().onAuthStateChanged((user) => {
         console.log("Checking auth state...");
+        const docRef = db.collection('users').doc(user.uid)
+        console.log(docRef) // test
+        docRef.get().then((doc) => {
+          if (doc.exists) {
+              console.log("Document data:", doc.data().role);
+              setUserType(doc.data().role)
+          } else {
+              // doc.data() will be undefined in this case
+              console.log("No such document!");
+          }
+      }).catch((error) => {
+          console.log("Error getting document:", error);
+      });
+        // if(test.data() === 'Admin'){
+        //   console.log('test' + test.data() )
+        // }
+
+
         if (user) {
             setIsAuthenticated(true);
         } else {
@@ -61,7 +95,11 @@ export default function App() {
   //console.log(require("./assets/icon.png"));
   return (
       <NavigationContainer>
-         {isAuthenticated ? <UserScreen /> : <AuthScreen />}   
+        { 
+
+          isAuthenticated && userType === 'Tenant' ? <UserScreen userType={userType}/> : isAuthenticated && userType === 'Landlord' ? <UserScreen userType={userType}/> : isAuthenticated && userType === 'Admin' ? <AdminScreens/> : <AuthScreen /> 
+          // isAuthenticated && userType === 'Tenant' ? <UserScreen /> : <AdminScreens />
+        }   
          {/* <ImagePicker2 /> */}
          {/* <Landlord/> */}
       </NavigationContainer>
