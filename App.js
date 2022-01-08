@@ -67,19 +67,7 @@ export default function App() {
       }
       firebase.auth().onAuthStateChanged((user) => {
         console.log("Checking auth state...");
-        const docRef = db.collection('users').doc(user.uid)
-        console.log(docRef) // test
-        docRef.get().then((doc) => {
-          if (doc.exists) {
-              console.log("Document data:", doc.data().role);
-              setUserType(doc.data().role)
-          } else {
-              // doc.data() will be undefined in this case
-              console.log("No such document!");
-          }
-      }).catch((error) => {
-          console.log("Error getting document:", error);
-      });
+        
         // if(test.data() === 'Admin'){
         //   console.log('test' + test.data() )
         // }
@@ -87,6 +75,19 @@ export default function App() {
 
         if (user) {
             setIsAuthenticated(true);
+            const docRef = db.collection('users').doc(user.uid)
+            console.log(docRef) // test
+            docRef.get().then((doc) => {
+              if (doc.exists) {
+                  console.log("Document data:", doc.data().role);
+                  setUserType(doc.data().role)
+              } else {
+                  // doc.data() will be undefined in this case
+                  console.log("No such document!");
+              }
+          }).catch((error) => {
+              console.log("Error getting document:", error);
+          });
         } else {
             setIsAuthenticated(false);
         }
