@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar, Pressable, Alert, TouchableOpacity, Platform, Button } from "react-native";
 import { Avatar, ListItem, Switch, Icon, BottomSheet } from 'react-native-elements'
 import BottomTabs, { bottomTabIcons } from "../component/home/BottomTabs";
-import ImagePicker2 from "../component/ImagePicker2";
+import ImagePicker from "../component/ImagePicker";
 import { auth } from "../firebase";
 const DATA = [
   {
@@ -25,10 +25,8 @@ const DATA = [
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bd",
     title: "About Us",
     data: ["Term of Service", "Contact Us", 'Privacy Policy']
-  }
+  },
 ];
-
-
 
     // display item in flatlist
     const Item = ({ item, onPress, backgroundColor, textColor }) => (
@@ -38,7 +36,7 @@ const DATA = [
     );
 
     
-    const App = ({navigation}) => {
+    const ProfileScreen = ({navigation}) => {
       const [expanded, setExpanded] = React.useState(false)
       const handlePress = () => setExpanded(!expanded)
       
@@ -126,7 +124,7 @@ const DATA = [
             <ListItem.Subtitle>
             <View style={{marginTop : 5}}>
                 <Pressable style={styles.buttonLogOut} >
-                    <Text onPress={signOutUser} style={{color: 'white'}}> LOG OUT </Text>
+                    <Text onPress={Platform.OS === 'web' ? signOutUser : logOutAlert} style={{color: 'white'}}> LOG OUT </Text>
                 </Pressable>
                 {/* <Button onPress={Platform.OS === 'web' ? signOutUser : logOutAlert} title = 'LOG OUT'/> */}
             </View>
@@ -179,7 +177,7 @@ const DATA = [
           ))}
         </BottomSheet> */}
       
-      <ImagePicker2 isVisible={isVisible} onClose={handleOnClose}/>
+      <ImagePicker isVisible={isVisible} onClose={handleOnClose}/>
         
       <BottomTabs icons ={bottomTabIcons} navigation={navigation}/>
       </SafeAreaView>
@@ -217,4 +215,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default ProfileScreen;

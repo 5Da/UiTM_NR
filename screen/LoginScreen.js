@@ -7,6 +7,7 @@ import { auth } from '../firebase';
 const LoginScreen = ( {navigation}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    // const [showPassword, setShowPassword] = useState(false)
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((authUser) =>{
@@ -45,12 +46,13 @@ const LoginScreen = ( {navigation}) => {
                 placeholder="Email" 
                 autoFocus type="Email" 
                 value={email}
+                autoCompleteType="email"
                 onChangeText={(text) =>setEmail(text)}
                 />
                 <Input 
                 style={{ paddingLeft: 10,}}
                 placeholder="Password" 
-                secureTextEntry 
+                secureTextEntry={true}
                 type="password"
                 value={password}
                 onChangeText={(text) =>setPassword(text)}
@@ -79,12 +81,13 @@ const styles = StyleSheet.create({
     button: {
         width: 200,
         marginTop: 10,
-        borderRadius: 10,
+        borderRadius: 5,
         backgroundColor: '#16324F',
     },
     button2: {
         width: 200,
+        // backgroundColor: '#16324F',
         marginTop: 10,
-        borderRadius: 10,
+        // borderRadius: 0,
     },
 });

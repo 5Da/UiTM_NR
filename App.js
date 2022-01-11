@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, } from 'react-native';
 import HomeScreen from './screen/HomeScreen';
 import PropertyScreen from './screen/PropertyScreen';
 import ProfileScreen from './screen/ProfileScreen';
+import ADetailsScreen from './screen/ADetailsScreen';
+import AdminScreen from './screen/AdminScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import ADetailsScreen from './screen/ADetailsScreen';
 import LoginScreen from './screen/LoginScreen';
-import AdminScreen from './screen/AdminScreen';
-import firebase from "firebase/app";
-// import "firebase/firestore";
-import Landlord from './component/Landlord';
-import ImagePicker2 from './component/ImagePicker2';
 import RegisterScreen from './screen/RegisterScreen';
+import Landlord from './component/Landlord';
+// import "firebase/firestore";
+import firebase from "firebase/app";
 import { db } from './firebase';
 // import TestScreen from './screen/TestScreen';
 // import Test2 from './screen/swipableItem';
@@ -101,7 +99,6 @@ export default function App() {
           isAuthenticated && userType === 'Tenant' ? <UserScreen userType={userType}/> : isAuthenticated && userType === 'Landlord' ? <UserScreen userType={userType}/> : isAuthenticated && userType === 'Admin' ? <AdminScreens/> : <AuthScreen /> 
           // isAuthenticated && userType === 'Tenant' ? <UserScreen /> : <AdminScreens />
         }   
-         {/* <ImagePicker2 /> */}
          {/* <Landlord/> */}
       </NavigationContainer>
       // <NavigationContainer>
@@ -121,9 +118,3 @@ export default function App() {
 
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-  },
-});

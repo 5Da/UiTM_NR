@@ -1,145 +1,130 @@
-import React, {useState} from react;
-import type {Node} from react;
+import React, { useEffect, useState } from 'react'
+import { Platform, StyleSheet, Text, View, Button, Image, StatusBar, TouchableWithoutFeedback, Dimensions,  } from 'react-native'
+import * as ImagePick from 'expo-image-picker'
+import { BottomSheet } from 'react-native-elements'
+import { auth, storage } from '../firebase'
 
-import {launchCamera, launchImageLibrary} from react-native-image-picker;
+const { height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-import {
-SafeAreaView,
-ScrollView,
-StatusBar,
-StyleSheet,
-Text,
-useColorScheme,
-View,
-Button,
-Image,
-} from react-native;
+const ImagePicker = ({isVisible,onClose}) => {
+    const [image, setImage] = useState(null)
+    
+    useEffect(async() => {
+        if(Platform.OS !== 'web'){
+            const { status } = await ImagePick.requestMediaLibraryPermissionsAsync()
+            if( status !== 'granted')
+                alert('Permission denied') 
+        }
+    }, [])
 
-import {Colors} from react-native/Libraries/NewAppScreen;
+    const PickImage = async () => {
+        let result = await ImagePick.launchImageLibraryAsync({
+            mediaTypes: ImagePick.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4,3],
+            quality: 1
+        })
+        // console.log(result)
+        if(!result.cancelled){
+            setImage(result.uri)
+            // console.log("result" + result.uri)
+        }
+    }
 
-const App: () => Node = () => {
-const [imageUri, setimageUri] = useState();
-const [imageUriGallary, setimageUriGallary] = useState());
+    const UpdateUserProfileImage = async () => {
+        if(auth.currentUser.photoURL !== image){
+            const url =  await uploadImage();
+            console.log('Url: ' + url)
+            // // // Upload Image
+            
+              auth.currentUser.updateProfile({photoURL : url})
+            
+        }
+        setImage(null)
+        return(onClose())
+    }
 
-const isDarkMode = useColorScheme() === "dark";
+    const uploadImage = async () => {
+        let imageUrl = '';
+           
+                
+                if (image != '') {
+                        const uploadUri = image
+                        let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
+                        
+                        console.log("Image url:" + image)
+                        const extension = filename.split('.').pop(); 
+                        const name = filename.split('.').slice(0, -1).join('.');
+                        filename = name + '.' + extension;
+                        console.log('filename' + filename)
 
-const backgroundStyle = {
-backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-};
+                        const storageRef = storage.ref()
+                        // const storageRef = storage.child(`photos/${uploadUri}`)
+                        const profilePicRef = storageRef.child(`photos/profilePic`)
+                        const reference = profilePicRef.put(uploadUri, {contentType: 'image/png'}).then((snapshot) => {
+                                console.log('Uploaded a blob or file!');
+                              });;
+                
+                    
+                    try {
+                    await reference
+                    imageUrl = await profilePicRef.getDownloadURL('profilePic');
+                    
+                    return imageUrl
+          
+                    } catch (e) {
+                        console.log(e);
+                        return null
+                    }
+                }
+    } 
 
-const openCamara = () => {
-const options = {
-storageOptions: {
-path: images,
-mediaType: photo,
-},
-includeBase64: true,
-};
+    return (
+        <View >
+        
 
-launchCamera(options, response => {
-console.log('Response = ', response);
-if (response.didCancel) {
-console.log('User cancelled image picker');
-} else if (response.error) {
-console.log('ImagePicker Error: ', response.error);
-} else if (response.customButton) {
-console.log('User tapped custom button: ', response.customButton);
-} else {
-// You can also display the image using data:
-const source = {uri: 'data:image/jpeg;base64,' + response.base64};
-setimageUri(source);
+        <BottomSheet
+            modalProps={{ onRequestClose: () => { onClose() ; setImage(null) }}}
+            isVisible={isVisible}
+            containerStyle={{ backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)' }}
+        >
+            <TouchableWithoutFeedback
+                onPress={() => (onClose(), setImage(null))}
+            >
+                <View style={{flex:1, height: height,}}>
+                
+                <View style={{position: Platform.OS === 'web' ? 'contain' : 'absolute' , width: width, bottom: 0}}>
+   
+                    
+                    {image && 
+                    <><Image source={{ uri: image }} style={{ width: 200, height: 200, borderRadius: 150, marginBottom:5, marginLeft: '5%' }} />
+                        <View style ={{position: 'absolute', right: '15%', top: '40%'}}>
+                        <Button title='Save Image' onPress={UpdateUserProfileImage} style={{borderRadius: 10}}/>
+                        </View>
+
+                    </>
+                    }
+                    
+                    <Button title='Choose Image' onPress={PickImage}/>
+                    <Button title='Cancel' onPress={() => (onClose(), setImage(null))}/>
+                    
+            
+                </View>
+                </View>
+            </TouchableWithoutFeedback>
+
+        </BottomSheet>
+        
+            {/* {image && 
+            <><Image source={{ uri: image }} style={{ width: 200, height: 200, borderRadius: 150, marginBottom:5, marginLeft: 5 }} /><Button title='Save Image' onPress={UpdateUserProfileImage} /></>
+            }
+            <Button title='Choose Image' onPress={PickImage}/>
+            <Button title='Cancel' onPress={() => (onClose(), setImage(null))}/> */}
+        </View>
+    )
 }
-});
-};
 
-const openGallery = () => {
-const options = {
-storageOptions: {
-path: 'images',
-mediaType: 'photo',
-},
-includeBase64: true,
-};
+export default ImagePicker
 
-launchImageLibrary(options, response => {
-console.log('Response = ', response);
-if (response.didCancel) {
-console.log('User cancelled image picker');
-} else if (response.error) {
-console.log('ImagePicker Error: ', response.error);
-} else if (response.customButton) {
-console.log('User tapped custom button: ', response.customButton);
-} else {
-// You can also display the image using data:
-const source = {uri: 'data:image/jpeg;base64,' + response.base64};
-setimageUriGallary(source);
-}
-});
-};
-
-return (
-<SafeAreaView style={[backgroundStyle, {flex: 1}]}>
-<View
-style={{
-justifyContent: 'center',
-alignItems: 'center',
-alignSelf: 'center',
-flex: 1,
-}}>
-<Button
-title={'Open Camara'}
-onPress={() => {
-openCamara();
-}}
-/>
-<Image
-source={imageUri}
-style={{
-height: 100,
-width: 100,
-borderRadius: 100,
-borderWidth: 2,
-borderColor: 'black',
-}}
-/>
-<Button
-title={'Open Gallary'}
-onPress={() => {
-openGallery();
-}}
-/>
-<Image
-source={imageUriGallary}
-style={{
-height: 100,
-width: 100,
-borderRadius: 100,
-borderWidth: 2,
-borderColor: 'black',
-}}
-/>
-</View>
-</SafeAreaView>
-);
-};
-
-const styles = StyleSheet.create({
-sectionContainer: {
-marginTop: 32,
-paddingHorizontal: 24,
-},
-sectionTitle: {
-fontSize: 24,
-fontWeight: 600,
-},
-sectionDescription: {
-marginTop: 8,
-fontSize: 18,
-fontWeight: 400,
-},
-highlight: {
-fontWeight: 700,
-},
-});
-
-export default App;
+const styles = StyleSheet.create({})

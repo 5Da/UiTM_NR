@@ -20,7 +20,7 @@ const HomeScreen = ({navigation}) => {
 
         <SafeAreaView style={styles.container}>
             <Header />
-            <ScrollView>
+            <ScrollView style={{flex: 1}}>
                 <ListAccommodation navigation={navigation}/>
             </ScrollView>
             <BottomTabs icons ={bottomTabIcons} navigation={navigation}/>
