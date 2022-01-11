@@ -44,15 +44,17 @@ const ImagePicker = ({isVisible,onClose}) => {
         setImage(null)
         return(onClose())
     }
-
+    
     const uploadImage = async () => {
         let imageUrl = '';
            
                 
                 if (image != '') {
-                        const uploadUri = image
-                        let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
+                        const uploadUri = await fetch(image)
+                        const blob = await uploadUri.blob()
+                        let filename = image.substring(image.lastIndexOf('/') + 1);
                         
+                        console.log(uploadUri)
                         console.log("Image url:" + image)
                         const extension = filename.split('.').pop(); 
                         const name = filename.split('.').slice(0, -1).join('.');
@@ -62,7 +64,7 @@ const ImagePicker = ({isVisible,onClose}) => {
                         const storageRef = storage.ref()
                         // const storageRef = storage.child(`photos/${uploadUri}`)
                         const profilePicRef = storageRef.child(`photos/profilePic`)
-                        const reference = profilePicRef.put(uploadUri, {contentType: 'image/png'}).then((snapshot) => {
+                        const reference = profilePicRef.put(blob).then((snapshot) => {
                                 console.log('Uploaded a blob or file!');
                               });;
                 
