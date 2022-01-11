@@ -20,15 +20,22 @@ const ImagePicker = ({isVisible,onClose}) => {
 
     const PickImage = async () => {
         let result = await ImagePick.launchImageLibraryAsync({
-            mediaTypes: ImagePick.MediaTypeOptions.All,
+            mediaTypes: ImagePick.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4,3],
             quality: 1
         })
         // console.log(result)
         if(!result.cancelled){
-            setImage(result.uri)
-            // console.log("result" + result.uri)
+            const type = result.uri.substring(5,10)
+            // console.log(result.uri)
+            // console.log(type)
+            if(type === 'image' || Platform.OS !== 'web'){
+                setImage(result.uri)
+                // console.log("result" + result.uri)
+            }else{
+                alert('Please choose an image only')
+            }
         }
     }
 
@@ -54,24 +61,26 @@ const ImagePicker = ({isVisible,onClose}) => {
                         const blob = await uploadUri.blob()
                         let filename = image.substring(image.lastIndexOf('/') + 1);
                         
-                        console.log(uploadUri)
-                        console.log("Image url:" + image)
+                        // console.log(uploadUri.url)
+                        // console.log("Image url:" + image)
                         const extension = filename.split('.').pop(); 
                         const name = filename.split('.').slice(0, -1).join('.');
                         filename = name + '.' + extension;
-                        console.log('filename' + filename)
+                        // console.log('filename' + filename)
 
                         const storageRef = storage.ref()
                         // const storageRef = storage.child(`photos/${uploadUri}`)
-                        const profilePicRef = storageRef.child(`photos/profilePic`)
-                        const reference = profilePicRef.put(blob).then((snapshot) => {
-                                console.log('Uploaded a blob or file!');
-                              });;
+                        // change directory for different user profile image
+                        const profilePicRef = storageRef.child(`photos/${auth.currentUser.uid}/profilePic`)
+                        const reference = profilePicRef.put(blob)
+                        // const reference = profilePicRef.put(blob).then((snapshot) => {
+                        //         console.log('Uploaded a blob or file!');
+                        //       });;
                 
                     
                     try {
                     await reference
-                    imageUrl = await profilePicRef.getDownloadURL('profilePic');
+                    imageUrl = await profilePicRef.getDownloadURL(`${auth.currentUser.uid}/profilePic`);
                     
                     return imageUrl
           

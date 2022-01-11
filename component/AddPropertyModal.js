@@ -23,7 +23,7 @@ const AddPropertyModal = ({visible, onClose}) => {
                     presentationStyle= 'formSheet'
                     transparent = {false}
                 >
-                    <View style={{margin: 4, justifyContent: 'center', alignItems: 'center', backgroundColor: 'blue'}} >
+                    <View style={{margin: 4, justifyContent: 'center', alignItems: 'center', backgroundColor: '#16324F'}} >
                     <Text style={{fontSize: 20, paddingTop: 6, paddingBottom: 6,  fontWeight: 'bold'}}> ADD NEW PROPERTY </Text>
                     </View>
                     

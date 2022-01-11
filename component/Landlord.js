@@ -49,6 +49,7 @@ const Landlord = ({navigation}) => {
                     title="Info"
                     icon={{ name: 'info', color: 'white' }}
                     buttonStyle={{ minHeight: '55%' }}
+                    onPress={() => navigation.navigate('ADetails')}
                     />
                     </View>
                     }
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
     },
     propertyList: {
         flex: 1,
-        backgroundColor: 'white', 
+        backgroundColor: 'gray', 
         marginTop: 5,
         marginBottom: 5,
         justifyContent: 'space-between',

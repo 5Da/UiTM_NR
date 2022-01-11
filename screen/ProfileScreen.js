@@ -119,6 +119,7 @@ const DATA = [
         <ListItem.Content > 
             <ListItem.Title>Muhammad Faidhi</ListItem.Title>
             <ListItem.Subtitle>Tenant / Landlord</ListItem.Subtitle>
+            <ListItem.Subtitle>{auth.currentUser.email}</ListItem.Subtitle>
             <ListItem.Subtitle >IC </ListItem.Subtitle>
             <ListItem.Subtitle>Male</ListItem.Subtitle>
             <ListItem.Subtitle>

@@ -43,7 +43,7 @@ const PropertyScreen = ({navigation, route}) => {
         <SafeAreaView style={styles.container}>
                 <Header />
                 <ScrollView >
-                {console.log(route)}
+                {/* {console.log(route)} */}
                     { route.params.userType === 'Tenant' ? <ListAccommodation save ={saved} navigation={navigation}/> : <Landlord navigation={navigation}/>}
                 <View style={{marginBottom: 50}}/>
                 </ScrollView>

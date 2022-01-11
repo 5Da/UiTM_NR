@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar, Pressable, Alert, TouchableOpacity } from "react-native";
 import { Avatar, ListItem, Switch, Icon } from 'react-native-elements'
-import BottomTabs, { bottomTabIcons } from "../component/home/BottomTabs";
-import { auth } from "../firebase";
+import BottomTabs, { bottomTabIcons } from "../../component/home/BottomTabs";
+import { auth } from "../../firebase";
 const DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",

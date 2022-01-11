@@ -29,7 +29,10 @@ const AuthScreen = () => (
 )
 
 const UserScreen = ({userType}) => (
-    <UserStack.Navigator>
+    <UserStack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}>
         <UserStack.Screen name='Home' component= {HomeScreen}/>  
         <UserStack.Screen name='Property' component= {PropertyScreen} initialParams={{userType: userType}}/>  
         <UserStack.Screen name='Profile' component= {ProfileScreen} />  
@@ -74,7 +77,7 @@ export default function App() {
         if (user) {
             setIsAuthenticated(true);
             const docRef = db.collection('users').doc(user.uid)
-            console.log(docRef) // test
+            // console.log(docRef) // test
             docRef.get().then((doc) => {
               if (doc.exists) {
                   console.log("Document data:", doc.data().role);
@@ -95,7 +98,6 @@ export default function App() {
   return (
       <NavigationContainer>
         { 
-
           isAuthenticated && userType === 'Tenant' ? <UserScreen userType={userType}/> : isAuthenticated && userType === 'Landlord' ? <UserScreen userType={userType}/> : isAuthenticated && userType === 'Admin' ? <AdminScreens/> : <AuthScreen /> 
           // isAuthenticated && userType === 'Tenant' ? <UserScreen /> : <AdminScreens />
         }   
