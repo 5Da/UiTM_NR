@@ -20,17 +20,32 @@ const ImagePicker = ({isVisible,onClose}) => {
 
     const PickImage = async () => {
         let result = await ImagePick.launchImageLibraryAsync({
-            mediaTypes: ImagePick.MediaTypeOptions.Images,
+            mediaTypes: ImagePick.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4,3],
             quality: 1
         })
+        
         // console.log(result)
         if(!result.cancelled){
-            const type = result.uri.substring(5,10)
-            // console.log(result.uri)
+            // check whther type is image or video on web platform 
+            const imageType = result.uri.substring(5,10)
+
+            //check whether type in image or video in android or ios phone
+            // console.log("type" + result.type)
+
+            // let fileName = result.uri.substring(result.uri.lastIndexOf('/') + 1);    
+            // const extension = result.uri.split('.').pop(); 
+            // const name = result.uri.split('.').slice(0, -1).join('.');
+            // fileName = name + '.' + extension;
+            // console.log("File Name" + fileName)
+            // console.log("uri" + result.uri)
+            // console.log("name" + name)
+            // console.log("extension" + extension)
+
+            // console.log("imageType" + imageType)
             // console.log(type)
-            if(type === 'image' || Platform.OS !== 'web'){
+            if(imageType === 'image' || Platform.OS !== 'web'){
                 setImage(result.uri)
                 // console.log("result" + result.uri)
             }else{
@@ -42,7 +57,7 @@ const ImagePicker = ({isVisible,onClose}) => {
     const UpdateUserProfileImage = async () => {
         if(auth.currentUser.photoURL !== image){
             const url =  await uploadImage();
-            console.log('Url: ' + url)
+            // console.log('Url: ' + url)
             // // // Upload Image
             
               auth.currentUser.updateProfile({photoURL : url})
@@ -64,15 +79,28 @@ const ImagePicker = ({isVisible,onClose}) => {
                         // console.log(uploadUri.url)
                         // console.log("Image url:" + image)
                         const extension = filename.split('.').pop(); 
-                        const name = filename.split('.').slice(0, -1).join('.');
-                        filename = name + '.' + extension;
+                        // const name = filename.split('.').slice(0, -1).join('.');
+                        // filename = name + '.' + extension;
                         // console.log('filename' + filename)
 
+                        // store image in firebase storage or create main/root storage reference
                         const storageRef = storage.ref()
+
+                        // sample on how to store image in firebase storage
                         // const storageRef = storage.child(`photos/${uploadUri}`)
+
                         // change directory for different user profile image
                         const profilePicRef = storageRef.child(`photos/${auth.currentUser.uid}/profilePic`)
-                        const reference = profilePicRef.put(blob)
+                        // const profilePicRef = storageRef.child(`photos/${auth.currentUser.uid}/profilePic.${extension}`)
+                        
+                        // get metadata for the image
+                        // const metadataName = profilePicRef.getMetadata()
+                        // console.log(metadataName);
+                        // console.log("root "+profilePicRef.root);
+                        // console.log(profilePicRef.fullPath);
+
+
+                        const reference = profilePicRef.put(blob, )
                         // const reference = profilePicRef.put(blob).then((snapshot) => {
                         //         console.log('Uploaded a blob or file!');
                         //       });;
@@ -81,7 +109,6 @@ const ImagePicker = ({isVisible,onClose}) => {
                     try {
                     await reference
                     imageUrl = await profilePicRef.getDownloadURL(`${auth.currentUser.uid}/profilePic`);
-                    
                     return imageUrl
           
                     } catch (e) {
