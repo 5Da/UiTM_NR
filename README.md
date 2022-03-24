@@ -11,3 +11,4 @@ Mobile version : https://expo.dev/@faidhi/UiTM_NR
 Installation:
 npm install,
 expo start
+![image](https://user-images.githubusercontent.com/12720029/160025306-03b2fee7-8332-426c-b353-4957572aa555.png)
