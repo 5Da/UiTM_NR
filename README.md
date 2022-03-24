@@ -18,4 +18,4 @@ Dashboard:
 ![image](https://user-images.githubusercontent.com/12720029/160025306-03b2fee7-8332-426c-b353-4957572aa555.png)
 
 Verify accomodation:
-![image](https://user-images.githubusercontent.com/12720029/160025606-6ef09f57-d507-45c8-90ad-5482368484cc.png)
+![image](https://user-images.githubusercontent.com/12720029/160025766-fd36ceb3-59af-43f8-9ba8-62d5d7e9f866.png)
