@@ -9,7 +9,8 @@ Sample working app link:
 Web version : https://uitmnr-fb1b5.web.app/
 
 Mobile version : https://expo.dev/@faidhi/UiTM_NR
-#Download the expo go app in Playstore or Appstore to test the app on your mobile device
+
+#Download the expo go app in Playstore or Appstore scan the QR code from the link above to test the app on your mobile device
 
 Installation:
 npm install,
