@@ -13,7 +13,9 @@ npm install,
 expo start
 
 tenant login: test@gmail.com ; password : 123123
+
 landlord login: test2@gmail.com ; password: 123123
+
 Admin Login: admin1@gmail.com, password: 123123
 
 Admin Page:
