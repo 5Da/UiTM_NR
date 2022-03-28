@@ -3,6 +3,7 @@ Rental app for final year project.
 React native expo app build with javascript + firebase v8.
 
 The app consists of 3 users, tenant, landlord and admin.
+Tenant and Landlord can add and view accommodation listing while all the listed listing need verification from the admin to be viewable by tenant
 #If there's any error just refresh the app
 
 Sample working app link:  
