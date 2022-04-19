@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, View, Text, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { Button, Input, Image } from 'react-native-elements';
 import { auth } from '../firebase';
 
@@ -11,7 +11,7 @@ const LoginScreen = ( {navigation}) => {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((authUser) =>{
-            
+            // console.log(authUser)
             if(authUser){
                 navigation.replace("Home");
             }

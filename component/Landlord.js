@@ -1,262 +1,212 @@
-import React, { useState } from 'react'
-import { Dimensions, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { Button, Divider, Icon, ListItem } from 'react-native-elements'
-import { SpeedDial } from 'react-native-elements'
+import React, { useEffect, useState } from 'react'
+import { Alert ,Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Button, ListItem, Tooltip } from 'react-native-elements'
+import { auth, db } from '../firebase'
 import AddPropertyModal from './AddPropertyModal'
 
-const verificationStatus = true
+// const verificationStatus = true
 
-const device_width = Dimensions.get('window').width
-const device_height = Dimensions.get('window').height
-
-
-const Landlord = ({navigation}) => {
+const Landlord = ({navigation, userType}) => {
     const [isModalVisible, setIsModalVisible] = useState(false)
-
     const handleOnClose = () => setIsModalVisible(false);
-    // const [open, setOpen] = React.useState(false)
+    const [property, setProperty] = useState([])
+    const [cnum, setCnum] = useState()
+    const [phoneNo, setPhoneNo] = useState()
+    const preferenceV = ['Family', 'Male', 'Female']
+    const featureAndFacilitiesV = ['24 hours security', 'Car park', 'Low floor', 'Wifi', 'Air-conditioning']
+  
+    const dbRef = db.collection('users').doc(auth.currentUser.uid)
+    dbRef.get().then((doc)=> setPhoneNo(doc.data().phoneNo))
+
+    useEffect(() => {
+        const unsubscribe = db.collection('Landlord').doc(auth.currentUser.uid).collection('Accommodation').onSnapshot( snapshot => (
+            setCnum(snapshot.size),
+            setProperty(snapshot.docs.map(doc => ({
+                id: doc.id,
+                data: doc.data(),
+            })))
+        ))
+        return unsubscribe;
+    }, [])
+    
+    const deleteProperty = (id) => {
+        if(Platform.OS === 'web'){
+            db.collection('Landlord').doc(auth.currentUser.uid).collection('Accommodation').doc(id).delete().then(() => {
+                console.log(`Removed item: ${id}`);
+            });
+        }
+        Alert.alert(
+            "Remove Item",
+            "Are you sure you want to removed?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => 
+                db.collection('Landlord').doc(auth.currentUser.uid).collection('Accommodation').doc(id).delete().then(() => {
+                    console.log(`Removed item: ${id}`);
+                })
+                }
+            ]
+            );
+        
+    }
+    // useEffect(() => {
+    //     db.collection('users').doc(auth.currentUser.uid).get().then((doc) => (
+    //         setUser({
+    //             id: doc.id,
+    //             data: doc.data(),}
+    //         )))
+    // }, [])
+    // console.log(auth.currentUser.uid)
+    // console.log(auth.currentUser.email)
+    // console.log(property)
+    // auth.settings.appVerificationDisabledForTesting = true;
+    // const phoneNumber = '01126051588'
+    // auth.currentUser.updatePhoneNumber( {phoneCredential : phoneNumber} )
     return (
-        <ScrollView >
+        
             <View>
-            
                 <View style={{backgroundColor: '#465362'}}>
-                    <TouchableOpacity 
+                    {cnum < 5 && phoneNo !== '' ?  
+                        <TouchableOpacity 
                         style={styles.addProperties}
                         onPress={() => setIsModalVisible(true)}
-                    >
-                    <Text style={styles.addContent}>ADD NEW PROPERTY</Text>
-                    <Image source= {{uri: 'https://img.icons8.com/ios-glyphs/2x/ffffff/add.png'}} style={styles.addIconContent}/>
-                    {/* <Icon name='pluscircleo' type='antdesign' style={styles.addIconContent}/> */}
-                    <Text></Text>
-                    </TouchableOpacity>
+                        >
+                        <Text style={styles.addContent}>ADD NEW PROPERTY</Text>
+                        <Image source= {{uri: 'https://img.icons8.com/ios-glyphs/2x/ffffff/add.png'}} style={styles.addIconContent}/>
+                        {/* <Icon name='pluscircleo' type='antdesign' style={styles.addIconContent}/> */}
+                        <Text></Text>
+                        </TouchableOpacity>
+                    :
+                        <Tooltip
+                        width={210}
+                        popover={ phoneNo !== '' ? <Text>Only 5 property can be added </Text> : <Text>Update your user profile </Text>}
+                        withPointer={false}
+                        >
+                        <TouchableOpacity 
+                        disabled={true}
+                        style={styles.addProperties}
+                        onPress={() => setIsModalVisible(true)}
+                        >
+                        <Text style={styles.addContent}>ADD NEW PROPERTY</Text>
+                        <Image source= {{uri: 'https://img.icons8.com/ios-glyphs/2x/ffffff/add.png'}} style={styles.addIconContent}/>
+                        {/* <Icon name='pluscircleo' type='antdesign' style={styles.addIconContent}/> */}
+                        <Text></Text>
+                        </TouchableOpacity>
+                        </Tooltip>
+                     }
                 </View>
 
+                {/* Modal page */}
                 <AddPropertyModal 
                     visible={isModalVisible}
                     onClose={handleOnClose}
+                    phoneNo={phoneNo}
                 />
-
+                <ScrollView >
                     {/* <Icon name='pluscircleo' type='antdesign' /> */}
                 <View style={styles.textContainer}>
                     <Text style={{fontSize: 30}}> List of Properties </Text>
                 </View>
 
-                <View style={styles.propertyList} >
-                    <ListItem.Swipeable 
-                    leftContent={ 
-                    <View style={{ justifyContent: 'center', alignItems: 'center', top: '25%', backgroundColor: '#CCE3DE'}}>
-                    <Button 
-                    title="Info"
-                    icon={{ name: 'info', color: 'white' }}
-                    buttonStyle={{ minHeight: '55%' }}
-                    onPress={() => navigation.navigate('ADetails')}
-                    />
-                    </View>
-                    }
-                    rightContent={
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: '#CCE3DE', top: '25%'}}>
-                    <Button 
-                        // title="Edit"
-                        icon={{ name: 'edit', color: 'white' }}
-                        buttonStyle={{ minHeight: '55%', backgroundColor: 'blue', marginRight: 7}} />
-                    <Button 
-                        // title="Delete"
-                        icon={{ name: 'delete', color: 'white' }}
-                        buttonStyle={{ minHeight: '55%', backgroundColor: 'red', marginLeft: 7}} />
+                {/* All list of add rental properties of landlord */}
+                    {property.map(( {id, 
+            data : {
+                phoneNo,
+                imageUrl,
+                propertyTitle,
+                price,
+                propertyAddress,
+                preference,
+                propertyRentTypeVal,
+                propertyTypeVal,
+                furnishVal,
+                featureAndFacilities,
+                propertyDesc,
+                email,
+                status,  
+            }}) => (
+                <View key={id} style={styles.propertyList} >
+
                     
-                    </View>
-                    }
-                    >
-                    <ListItem.Content style={styles.listPropertyContainer}>
-                        {/* ///////////////////////////////hereeeee///////////////////////// */}
+                    <ListItem.Swipeable 
+                        leftContent={ 
+                        <View style={{ justifyContent: 'center', alignItems: 'center', top: '25%', backgroundColor: '#CCE3DE'}}>
+                            <Button 
+                            title="Info"
+                            icon={{ name: 'info', color: 'white' }}
+                            buttonStyle={{ minHeight: '55%' }}
+                            onPress={() => navigation.navigate("ADetails", 
+                            {       id,
+                                    phoneNo,
+                                    imageUrl,
+                                    propertyTitle,
+                                    price,
+                                    propertyAddress,
+                                    preference,
+                                    propertyRentTypeVal,
+                                    propertyTypeVal,
+                                    furnishVal,
+                                    featureAndFacilities,
+                                    featureAndFacilitiesV,
+                                    propertyDesc,
+                                    email,
+                                    status, 
+                                    userType, 
+                                })}
+                            />
+                        </View>
+                        }
+                        rightContent={
+                        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: '#CCE3DE', top: '25%'}}>
+                            <Button 
+                                icon={{ name: 'edit', color: 'white' }}
+                                buttonStyle={{ minHeight: '55%', backgroundColor: 'blue', marginRight: 7}} />
+                            <Button 
+                                onPress={() => deleteProperty(id)}
+                                icon={{ name: 'delete', color: 'white' }}
+                                buttonStyle={{ minHeight: '55%', backgroundColor: 'red', marginLeft: 7}} />
+                        
+                        </View>
+                        }
+                        >
+                        <ListItem.Content style={styles.listPropertyContainer}>
+                        {/* ///////////////////////////////Change dynamic value here hereeeee///////////////////////// */}
                             <TouchableOpacity style={styles.listPropertyContainer} onPress={() => navigation.navigate('ADetails')}>
-                            <View style={styles.listItems}>
-                                <Image 
-                                    style={styles.image}
-                                    source={{uri : 'https://picsum.photos/200/300',}}
-                                    />
-                                <View style={styles.buttonContainer} >
-                                {verificationStatus != false ? <Text style={styles.buttonVerification}>VERIFIED</Text> : null }
+                                <View style={styles.listItems}>
+                                    <Image 
+                                        style={styles.image}
+                                        source={{uri : imageUrl[0]}}
+                                        />
+                                    <View style={styles.buttonContainer} >
+                                    {status !== 'Unverified' ? <Text style={styles.buttonVerification}>VERIFIED</Text> : null }
+                                    </View>
+                                    <View style={styles.itemDetails}>
+                                        <Text>{propertyTitle}</Text>
+                                        <Text>{propertyRentTypeVal}</Text>
+                                        <Text>{propertyTypeVal}</Text>
+                                        <Text>Preference: {preferenceV[preference[0]]} , {preferenceV[preference[1]]} {preferenceV[preference[2]]}</Text>
+                                        <Text>{furnishVal}</Text>
+                                        <Text>Price: RM {price} / month</Text>
+                                        {/* <Text>Available Room: 3</Text> */}
+                                        {/* <Text>{status}</Text> */}
+                                    </View>
                                 </View>
-                                <View style={styles.itemDetails}>
-                                    <Text>Addreess</Text>
-                                    <Text>AccommodationType: Room/ Whole Unit</Text>
-                                    <Text>Furnish: No/ Partial/ Fully furnishing</Text>
-                                    <Text>Price: RM 500</Text>
-                                </View>
-                            </View>
                             </TouchableOpacity>
-                    </ListItem.Content>
-                    <ListItem.Chevron />
+                        </ListItem.Content>
+                        <ListItem.Chevron />
                     </ListItem.Swipeable>
                 </View>
+                    ))}
 
-                {/* <View style={styles.propertyList}>
-                    <ListItem.Swipeable 
-                    leftContent={ 
-                    <View style={{ justifyContent: 'center', alignItems: 'center', top: '25%', backgroundColor: 'pink'}}>
-                    <Button 
-                    title="Info"
-                    icon={{ name: 'info', color: 'white' }}
-                    buttonStyle={{ minHeight: '55%' }}
-                    />
-                    </View>
-                    }
-                    rightContent={
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'pink', top: '25%'}}>
-                    <Button 
-                        // title="Edit"
-                        icon={{ name: 'edit', color: 'white' }}
-                        buttonStyle={{ minHeight: '55%', backgroundColor: 'blue', marginRight: 7}} />
-                    <Button 
-                        // title="Delete"
-                        icon={{ name: 'delete', color: 'white' }}
-                        buttonStyle={{ minHeight: '55%', backgroundColor: 'red', marginLeft: 7}} />
-                    
-                    </View>
-                    }
-                    >
-                    <ListItem.Content style={styles.listPropertyContainer}>
-                            <TouchableOpacity style={styles.listPropertyContainer}>
-                            <View style={styles.listItems}>
-                                <Image 
-                                    style={styles.image}
-                                    source={{uri : 'https://picsum.photos/200/300',}}
-                                    />
-                                <View style={styles.buttonContainer} >
-                                {verificationStatus != false ? <Text style={styles.buttonVerification}>VERIFIED</Text> : null }
-                                </View>
-                                <View style={styles.itemDetails}>
-                                    <Text>Addreess</Text>
-                                    <Text>AccommodationType: Room/ Whole Unit</Text>
-                                    <Text>Furnish: No/ Partial/ Fully furnishing</Text>
-                                    <Text>Price: RM 500</Text>
-                                </View>
-                            </View>
-                            </TouchableOpacity>
-                    </ListItem.Content>
-                    <ListItem.Chevron />
-                    </ListItem.Swipeable>
-                </View>
 
-                <View style={styles.propertyList}>
-                    <ListItem.Swipeable 
-                    leftContent={ 
-                    <View style={{ justifyContent: 'center', alignItems: 'center', top: '25%', backgroundColor: 'pink'}}>
-                    <Button 
-                    title="Info"
-                    icon={{ name: 'info', color: 'white' }}
-                    buttonStyle={{ minHeight: '55%' }}
-                    />
-                    </View>
-                    }
-                    rightContent={
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'pink', top: '25%'}}>
-                    <Button 
-                        // title="Edit"
-                        icon={{ name: 'edit', color: 'white' }}
-                        buttonStyle={{ minHeight: '55%', backgroundColor: 'blue', marginRight: 7}} />
-                    <Button 
-                        // title="Delete"
-                        icon={{ name: 'delete', color: 'white' }}
-                        buttonStyle={{ minHeight: '55%', backgroundColor: 'red', marginLeft: 7}} />
-                    
-                    </View>
-                    }
-                    >
-                    <ListItem.Content style={styles.listPropertyContainer}>
-                            <TouchableOpacity style={styles.listPropertyContainer}>
-                            <View style={styles.listItems}>
-                                <Image 
-                                    style={styles.image}
-                                    source={{uri : 'https://picsum.photos/200/300',}}
-                                    />
-                                <View style={styles.buttonContainer} >
-                                {verificationStatus != false ? <Text style={styles.buttonVerification}>VERIFIED</Text> : null }
-                                </View>
-                                <View style={styles.itemDetails}>
-                                    <Text>Addreess</Text>
-                                    <Text>AccommodationType: Room/ Whole Unit</Text>
-                                    <Text>Furnish: No/ Partial/ Fully furnishing</Text>
-                                    <Text>Price: RM 500</Text>
-                                </View>
-                            </View>
-                            </TouchableOpacity>
-                    </ListItem.Content>
-                    <ListItem.Chevron />
-                    </ListItem.Swipeable>
-                </View> */}
-                {/* <View style={styles.propertyList}>
-                    <ListItem.Swipeable 
-                    leftContent={ 
-                    <View style={{ justifyContent: 'center', alignItems: 'center', top: '25%', backgroundColor: 'pink'}}>
-                    <Button 
-                    title="Info"
-                    icon={{ name: 'info', color: 'white' }}
-                    buttonStyle={{ minHeight: '55%' }}
-                    />
-                    </View>
-                    }
-                    rightContent={
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'pink', top: '25%'}}>
-                    <Button 
-                        // title="Edit"
-                        icon={{ name: 'edit', color: 'white' }}
-                        buttonStyle={{ minHeight: '55%', backgroundColor: 'blue', marginRight: 7}} />
-                    <Button 
-                        // title="Delete"
-                        icon={{ name: 'delete', color: 'white' }}
-                        buttonStyle={{ minHeight: '55%', backgroundColor: 'red', marginLeft: 7}} />
-                    
-                    </View>
-                    }
-                    >
-                    <ListItem.Content style={styles.listPropertyContainer}>
-                            <TouchableOpacity style={styles.listPropertyContainer}>
-                            <View style={styles.listItems}>
-                                <Image 
-                                    style={styles.image}
-                                    source={{uri : 'https://picsum.photos/200/300',}}
-                                    />
-                                <View style={styles.buttonContainer} >
-                                {verificationStatus != false ? <Text style={styles.buttonVerification}>VERIFIED</Text> : null }
-                                </View>
-                                <View style={styles.itemDetails}>
-                                    <Text>Addreess</Text>
-                                    <Text>AccommodationType: Room/ Whole Unit</Text>
-                                    <Text>Furnish: No/ Partial/ Fully furnishing</Text>
-                                    <Text>Price: RM 500</Text>
-                                </View>
-                            </View>
-                            </TouchableOpacity>
-                    </ListItem.Content>
-                    <ListItem.Chevron />
-                    </ListItem.Swipeable>
-                </View> */}
-            </View>
-                {/* <SpeedDial 
-                style={{bottom: '10%'}}
-                color= {'blue'}
-                isOpen={open}
-                icon={{ name: 'plus', type: 'feather', color: '#fff' }}
-                openIcon={{ name: 'close', color: '#fff' }}
-                onOpen={() => setOpen(!open)}
-                onClose={() => setOpen(!open)}
-                >
-                <SpeedDial.Action
-                    color= {'blue'}
-                    icon={{ name: 'add', color: '#fff' }}
-                    title="Add new agreement"
-                    onPress={() => console.log('Add Something')}
-                />
-                <SpeedDial.Action
-                    color= {'blue'}
-                    icon={{ name: 'edit', color: '#fff' }}
-                    title="Edit Agreement"
-                    onPress={() => console.log('Edit Something')}
-                />
-                </SpeedDial> */}
-        </ScrollView>
+            </ScrollView>
+            {/* space hack maybe XD        */}
+            <View style={{marginBottom: 75}}/> 
+        </View>
     )
 }
 
@@ -313,8 +263,9 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     image: {
+        borderRadius: 5,
         width: 150, 
-        height: 125,
+        height: 150,
         resizeMode: 'cover',
         // zIndex: 50,
     },

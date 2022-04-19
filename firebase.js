@@ -15,7 +15,7 @@ const firebaseConfig = {
 
  
   let app;
-// we do this if to not keep on repeating on initializing the app if it has already been initialize
+  // we do this if to not keep on repeating on initializing the app if it has already been initialize
   if(firebase.apps.length === 0){
     app = firebase.initializeApp(firebaseConfig);
   } else{

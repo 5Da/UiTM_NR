@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import Filter from '../../screen/FilterScreen'
 
-const Header = () => {
+const Header = ({navigation}) => {
+    const [isModalVisible, setIsModalVisible] = useState(false)
+    const handleOnClose = () => setIsModalVisible(false);
+
     return (
         <View style={styles.container}> 
             <TouchableOpacity style={{marginHorizontal: 6}}>
@@ -12,7 +16,9 @@ const Header = () => {
             <View style={styles.search}>
                 <TextInput placeholder='Search' placeholderTextColor='gray'></TextInput>
             </View>
-            <TouchableOpacity style={{marginHorizontal: 6}}>
+            <TouchableOpacity 
+                onPress={() => setIsModalVisible(!isModalVisible)}
+                style={{marginHorizontal: 6}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image 
                     source={{uri: 'https://img.icons8.com/external-kiranshastry-lineal-kiranshastry/2x/external-filter-interface-kiranshastry-lineal-kiranshastry.png', width: 30, height: 30}}
@@ -20,6 +26,7 @@ const Header = () => {
                 <Text style={{marginRight: 4}}>Filter</Text>
                 </View>
             </TouchableOpacity>
+            <Filter visible={isModalVisible} onClose={handleOnClose}/>
         </View>
     )
 }

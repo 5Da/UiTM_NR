@@ -7,7 +7,7 @@ const { width } = Dimensions.get('window');
 // const height = width * 0.7
 
 export default function Swiper({data}) {
-    console.log(data)
+    // console.log(data)
     const scrollValue = useRef(new Animated.Value(0)).current;
     const translateX = scrollValue.interpolate({
         inputRange: [0, width],

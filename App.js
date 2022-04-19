@@ -8,18 +8,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './screen/LoginScreen';
 import RegisterScreen from './screen/RegisterScreen';
-import Landlord from './component/Landlord';
-// import "firebase/firestore";
-import firebase from "firebase/app";
-import { db } from './firebase';
-// import TestScreen from './screen/TestScreen';
-// import Test2 from './screen/swipableItem';
-// import ListAccommodation from './component/home/ListAccommodation';
-// import Edit from './component/edit';
+import { db, auth } from './firebase';
+import { Platform } from 'react-native';
+import FilterScreen from './screen/FilterScreen';
+import EditProfileScreen from './screen/EditProfileScreen';
+import NotificationScreen from './screen/NotificationScreen';
+import SupportScreen from './screen/SupportScreen';
+import AboutUsScreen from './screen/AboutUsScreen';
 
 const AuthStack = createStackNavigator()
 const UserStack = createStackNavigator()
 const AdminStack = createStackNavigator()
+
 // const statusTenant = true
 const AuthScreen = () => (
     <AuthStack.Navigator>
@@ -31,12 +31,18 @@ const AuthScreen = () => (
 const UserScreen = ({userType}) => (
     <UserStack.Navigator
     screenOptions={{
-      headerShown: false,
+      gestureEnabled: true,
+      headerShown: Platform.OS === "web" ? true : false,
     }}>
-        <UserStack.Screen name='Home' component= {HomeScreen}/>  
+        <UserStack.Screen name='Home' component= {HomeScreen} initialParams={{userType: userType}}/>  
         <UserStack.Screen name='Property' component= {PropertyScreen} initialParams={{userType: userType}}/>  
         <UserStack.Screen name='Profile' component= {ProfileScreen} />  
         <UserStack.Screen name='ADetails' component= {ADetailsScreen} />  
+        <UserStack.Screen name='Filter' component= {FilterScreen} />  
+        <UserStack.Screen name='Edit Profile' component= {EditProfileScreen} />  
+        <UserStack.Screen name='Notification' component= {NotificationScreen} />  
+        <UserStack.Screen name='Support' component= {SupportScreen} />  
+        <UserStack.Screen name='About Us' component= {AboutUsScreen} />  
     </UserStack.Navigator>
 )
 
@@ -46,16 +52,6 @@ const AdminScreens = () => (
     </AdminStack.Navigator>
 )
 
-// const CheckUser = ({isAuthenticated, userType}) => {
-
-//   if(userType === 'Admin'){
-//     {isAuthenticated ? <AdminScreens /> : <AuthScreen />}
-//   }
-//   else if(userType === 'Tenant'){
-//     {isAuthenticated ? <UserScreen /> : <AuthScreen />}
-//   }
-
-// }
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -63,17 +59,12 @@ export default function App() {
   
 
   useEffect(() => {
-    if (firebase.auth().currentUser) {
+    if (auth.currentUser) {
         setIsAuthenticated(true);
       }
-      firebase.auth().onAuthStateChanged((user) => {
+      auth.onAuthStateChanged((user) => {
         console.log("Checking auth state...");
-        
-        // if(test.data() === 'Admin'){
-        //   console.log('test' + test.data() )
-        // }
-
-
+      
         if (user) {
             setIsAuthenticated(true);
             const docRef = db.collection('users').doc(user.uid)
@@ -82,6 +73,7 @@ export default function App() {
               if (doc.exists) {
                   console.log("Document data:", doc.data().role);
                   setUserType(doc.data().role)
+                  // setPhoneNp(doc.data().phoneNo)
               } else {
                   // doc.data() will be undefined in this case
                   console.log("No such document!");
@@ -94,29 +86,11 @@ export default function App() {
         }
     });
 }, []);
-  //console.log(require("./assets/icon.png"));
   return (
       <NavigationContainer>
         { 
           isAuthenticated && userType === 'Tenant' ? <UserScreen userType={userType}/> : isAuthenticated && userType === 'Landlord' ? <UserScreen userType={userType}/> : isAuthenticated && userType === 'Admin' ? <AdminScreens/> : <AuthScreen /> 
-          // isAuthenticated && userType === 'Tenant' ? <UserScreen /> : <AdminScreens />
         }   
-         {/* <Landlord/> */}
       </NavigationContainer>
-      // <NavigationContainer>
-      //       <AdminScreens />
-      // </NavigationContainer>
-    // <Edit />
-    // <HomeScreen/>
-    // <PropertyScreen />
-    // <ProfileScreen />
-    // <ADetailsScreen />
-    // <ListAccommodation />
-    // <LoginScreen />
-
-      // <TestScreen />
-      // <Test2/>
-
-
   );
 }

@@ -6,8 +6,9 @@ const width = 150
 // console.log(width)
 // const height = width * 0.7
 
-export default function Swiper({data}) {
-    console.log(data)
+export default function SwiperAlternative({data}) {
+    // console.log(data)
+ 
     const scrollValue = useRef(new Animated.Value(0)).current;
     const translateX = scrollValue.interpolate({
         inputRange: [0, width],
@@ -26,24 +27,25 @@ export default function Swiper({data}) {
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { x: scrollValue } } }],
                     { useNativeDriver: false },
-                )}>
-                {data.map(data => (
+                    )}>
+                        {data.map( url => (
                     <Image 
-                        source= {{ uri : data}}
-                        style={styles.card} key={data} />
-                ))}
+                        key={url.toString()}
+                        source= {{ uri : url}}
+                        style={styles.card}  />
+                        ))}
             </ScrollView>
-            {/* <View style={styles.indicatorContainer} pointerEvents="none">
-                {data.map(x => (
-                    <Indicator x={x} key={x} />
-                ))}
-                <Animated.View
-                    style={[
-                        styles.activeIndicator,
-                        { position: 'absolute', transform: [{ translateX }] },
-                    ]}
-                />
-            </View> */}
+        {/* <View style={styles.indicatorContainer} pointerEvents="none">
+            {data.map(x => (
+                <Indicator x={x} key={x} />
+            ))}
+            <Animated.View
+            style={[
+                styles.activeIndicator,
+                { position: 'absolute', transform: [{ translateX }] },
+            ]}
+            />
+        </View> */}
         </View>
     );
 }

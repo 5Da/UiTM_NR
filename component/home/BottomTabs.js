@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Divider } from 'react-native-elements'
-import HomeScreen from '../../screen/HomeScreen'
 
 export const bottomTabIcons = [
     {
@@ -26,18 +25,17 @@ export const bottomTabIcons = [
     
 const BottomTabs = ({navigation, icons}) => {
     const [activeTab, setActiveTab] = useState('Home')
-    const Icon = ({icon}) => (
+    
+    const Icon = ({icon, index}) => (
         
-        
-
         <TouchableOpacity 
         onPress={() =>  (
             setActiveTab(icon.name),
             navigation.navigate(icon.name) )
             } 
-        
         >
-            <Image 
+
+            <Image key={index}
                 source= {{uri: activeTab === icon.name ? icon.active : icon.inactive}} 
                 style={
                     styles.icon
@@ -45,16 +43,13 @@ const BottomTabs = ({navigation, icons}) => {
                 />
         <View><Text style={{color: 'white'}}>{icon.name}</Text></View>
         </TouchableOpacity>
-
-
     )
     
     return (
         
         <View style={styles.wrapper}>
             <Divider width={1} orientation= 'vertical' />
-            <View style={styles.container} onPress={() =>  
-            navigation.navigate(icon.name)} >
+            <View style={styles.container} >
                 {icons.map((icon, index) => (
                     <Icon key={index} icon={icon} />
                     ))}

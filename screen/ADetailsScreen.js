@@ -1,122 +1,151 @@
 import React from 'react'
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Image, Linking, Platform, SafeAreaView, ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native'
 import { Divider, Button, Icon} from 'react-native-elements'
 import { FontAwesome } from '@expo/vector-icons';
 import Swiper from '../component/Swiper';
-export const data = [
-    // 'https://i0.wp.com/tokusatsunetwork.com/wp-content/uploads/2020/01/622207C2-66FC-4E40-8ACE-93451C2B692F.jpeg?resize=500%2C500',
-    // 'https://i1.sndcdn.com/artworks-nTBzTVq3mDNiozoc-sJRrSA-t500x500.jpg',
-    // 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRuOSRAQwUl81m6VATDRI9uxRKarwZWEx1tg&usqp=CAU',
-    // 'https://static.myfigurecollection.net/pics/figure/large/849650.jpg?rev=1559580141',
-    'https://picsum.photos/500/490',
-    'https://picsum.photos/500/520',
-    'https://picsum.photos/500/500',
-    'https://picsum.photos/500/510',
-    'https://picsum.photos/500/480',
- ]
-const verificationStatus ='true'
+import { auth, db } from '../firebase';
+import firebase from 'firebase/app'
+//firebase import perlu dibaiki
 
-const ADetailsScreen = () => {
+const savedProperty = (route) => {
+    // console.log(route.params.id)
+    // console.log(auth.currentUser.email)
+    db.collection('Landlord').doc(route.params.userUid).collection('Accommodation').doc(route.params.id).update({ like : firebase.firestore.FieldValue.arrayUnion(auth.currentUser.uid) })
+    if(Platform.OS === 'android')
+      ToastAndroid.show('Saved', ToastAndroid.SHORT);
+    else
+      alert('Saved')
+}
+
+
+
+const ADetailsScreen = ({route, ...props}) => {
+    // console.log(route)
+    // console.log(props)
+
+
+    const initiateWhatsApp = (route) => {
+
+        // Using 60 for Malaysia
+        // You can change 60 with your country code
+        let url =
+          'whatsapp://send?text=' + route.params.imageUrl[0] + "\n" + route.params.imageUrl[1] + 
+          + route.params.imageUrl[2] + 
+          "\nHii is this rental still available?" +
+          '&phone=60' + '01126051588';
+        Linking.openURL(url)
+          .then((data) => {
+            console.log('WhatsApp Opened');
+          })
+          .catch(() => {
+            alert('Make sure Whatsapp installed on your device');
+          });
+      };
+      const phoneCall = (route) => {
+        Linking.openURL(`tel:${route.params.phoneNo}`)
+      }
+    // console.log(route.params.id)
     return (
         <SafeAreaView style={{flex: 1}}>
-            <ScrollView>
-            <Swiper data={data}/>    
-            {/* <Image 
-                    style={styles.image}
-                    source={{uri : 'https://picsum.photos/1000/1300',}}
-                /> */}
-    
+            <ScrollView key={route.params.id}>
+            <Swiper data={route.params.imageUrl}/>    
             <View style={styles.buttonContainer}>
-                {verificationStatus != 'false' ? <Button title='Verified' style={styles.buttonVerification}/> : null }
+                {/* {route.params.status || verificationStatus != 'false' ? <Button title='Verified' style={styles.buttonVerification}/> : null } */}
+                { route.params.status !== 'Unverified' ? <Button title='Verified' style={styles.buttonVerification}/> : null }
             </View>
-
+            {/* <Text onPress={() => props.navigation.goBack()}>Go back</Text> */}
             <View style={styles.container}>
-                <Text style={{fontWeight: 'bold',  fontSize: 25}}>RM2000</Text>
-                
+                <Text style={{fontWeight: 'bold',  fontSize: 25}}>RM{route.params.price} </Text>
+                {/* logik untuk image nk kena diperbetulkan */}
+                {route.params.preference[0]=== 0 || route.params.preference[1]=== 0 || route.params.preference[2]=== 0 ?
                 <Image
-                    style={styles.icon} 
-                    source={{uri: 'https://img.icons8.com/color/2x/male-female-user-group.png'}}
-                />
+                style={styles.icon} 
+                source={{uri: 'https://img.icons8.com/color/2x/male-female-user-group.png'}}
+                /> : null
+                }
+                {route.params.preference[0]=== 1 || route.params.preference[1]=== 1 || route.params.preference[2]=== 1 ?
+                <Image
+                style={styles.icon} 
+                source={{uri: 'https://img.icons8.com/color/344/person-male.png'}}
+                /> : null
+                }
+                {route.params.preference[0]=== 2 || route.params.preference[1]=== 2 || route.params.preference[2]=== 2 ?
+                <Image
+                style={styles.icon} 
+                source={{uri: 'https://img.icons8.com/color/344/person-female.png'}}
+                /> : null
+            }
                 <Divider />
             </View>
             <Divider />
 
+            {/* {route.params.imageUrl[0] + route.params.imageUrl[1] + route.params.imageUrl[2]} */}
             <View style={styles.contentContainer}>
-                <Text>Whole Unit / Room Rental</Text>
+                <Text>Property Title</Text>
+                <Text style={{fontWeight: 'bold', fontSize: 20}}>{route.params.propertyTitle}</Text>
             </View>
             <Divider />
 
             <View style={styles.contentContainer}>
-                <Text>Listing Title</Text>
-                <Text style={{fontWeight: 'bold', fontSize: 20}}>Vista Alam</Text>
+                <Text>Rental Type: </Text>
+                <Text>{route.params.propertyRentTypeVal}</Text>
             </View>
             <Divider />
 
             <View style={styles.contentContainer}>
-                <Text>Property Type</Text>
-                <Text>Apartment/ Condo/ Bungalow </Text>
+                <Text>Property Type: </Text>
+                <Text>{route.params.propertyTypeVal}</Text>
             </View>
             <Divider />
 
             <View style={styles.contentContainer}>
-                <Text>Listing Furnishing</Text>
-                <Text>Partial furnish </Text>
+                <Text>Furnishing: </Text>
+                <Text>{route.params.furnishVal}</Text>
             </View>
             <Divider />
 
             <View style={styles.contentContainer}>
-                <Text>Listing Addreess</Text>
-                <Text>Menara Olympia, No. 8, Jalan Raja Chulan, 50200, Kuala Lumpur</Text>
+                <Text>Address: </Text>
+                <Text>{route.params.propertyAddress}</Text>
             </View>
             <Divider />
 
             <View style={styles.contentContainer}>
-                <Text>Listing Features</Text>
-                <Text>-Fridge </Text>
-                <Text>-Wifi </Text>
-                <Text>-Washer </Text>
+                {/* <Text>{route.params.featureAndFacilitiesV[0]}</Text> */}
+                <Text>Listing Features & Faciilities :</Text>
+                {route.params.featureAndFacilitiesV[route.params.featureAndFacilities[0]]?
+                <Text>{route.params.featureAndFacilitiesV[route.params.featureAndFacilities[0]]}</Text> : null}
+                {route.params.featureAndFacilitiesV[route.params.featureAndFacilities[1]]?
+                <Text>{route.params.featureAndFacilitiesV[route.params.featureAndFacilities[1]]}</Text> : null}
+                {route.params.featureAndFacilitiesV[route.params.featureAndFacilities[2]]?
+                <Text>{route.params.featureAndFacilitiesV[route.params.featureAndFacilities[2]]}</Text> : null}
+                {route.params.featureAndFacilitiesV[route.params.featureAndFacilities[3]]?
+                <Text>{route.params.featureAndFacilitiesV[route.params.featureAndFacilities[3]]}</Text> : null}
+                
+                
             </View>
             <Divider />
 
-            <View style={styles.contentContainer}>
-                <Text>Listing Faciilities</Text>
+            {/* <View style={styles.contentContainer}>
+               
                 <Text>-Swimming </Text>
                 <Text>-Security </Text>
                 <Text>-Gym </Text>
                 <Text>-Playground </Text>
             </View>
-            <Divider />
+            <Divider /> */}
 
             <View style={styles.contentContainer}>
-                <Text>Listing Description</Text>
-                <Text>-asdasdasdasdsadsa </Text>
-                <Text>-asdasdasdasdsadsa </Text>
-                <Text>-asdasdasdasdsadsa </Text>
+                <Text>Descriptions: </Text>
+                <Text>{route.params.propertyDesc}</Text>
+                
             </View>
             <Divider />
-            <View style={styles.contentContainer}>
-                <Text>Listing Description</Text>
-                <Text>-asdasdasdasdsadsa </Text>
-                <Text>-asdasdasdasdsadsa </Text>
-                <Text>-asdasdasdasdsadsa </Text>
-            </View>
-            <Divider />
-            <View style={styles.contentContainer}>
-                <Text>Listing Description</Text>
-                <Text>-asdasdasdasdsadsa </Text>
-                <Text>-asdasdasdasdsadsa </Text>
-                <Text>-asdasdasdasdsadsa </Text>
-            </View>
-            <Divider />
-            <View style={styles.contentContainer}>
-                <Text>Listing Description</Text>
-                <Text>-asdasdasdasdsadsa </Text>
-                <Text>-asdasdasdasdsadsa </Text>
-                <Text>-asdasdasdasdsadsa </Text>
-            </View>
-            <Divider />
+            
+            <Divider style={{marginBottom: route.params.userType !== 'Landlord'? 70 : 20}} />
 
         </ScrollView>
+        {route.params.userType !== 'Landlord'? 
         <View style={styles.bottomWrapper}>
             <Divider width={1} orientation= 'vertical' style={{marginBottom: 10}}/>
             <View style={styles.methodChoosen}>    
@@ -124,6 +153,7 @@ const ADetailsScreen = () => {
                 <Text />
                 <View style={{borderRadius: 10, overflow: 'hidden'}}>
                 <Button 
+                    onPress={() => phoneCall(route)}
                     icon={
                         <Icon name="call" type="ionsicon" size={24} color="black"/>
                     }
@@ -132,6 +162,7 @@ const ADetailsScreen = () => {
 
                 <View style={{borderRadius: 10, overflow: 'hidden'}}>
                 <Button  
+                    onPress={() => initiateWhatsApp(route)}
                     icon={
                         <FontAwesome name="whatsapp" size={24} color="black" />
                     }
@@ -140,6 +171,7 @@ const ADetailsScreen = () => {
 
                 <View style={{borderRadius: 10, overflow: 'hidden'}}>
                 <Button 
+                    onPress={() => savedProperty(route)}
                     icon={
                         <Icon name="add-circle-outline" type="ionsicon" size={24} color="black"/>
                     }
@@ -147,9 +179,10 @@ const ADetailsScreen = () => {
                 />
                 </View>
                 <Text />
-                <Text />
+                
             </View>
         </View>
+        : null}
         </SafeAreaView>
     )
 }

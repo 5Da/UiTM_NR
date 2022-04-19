@@ -1,108 +1,118 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar, Pressable, Alert, TouchableOpacity, Platform, Button } from "react-native";
-import { Avatar, ListItem, Switch, Icon, BottomSheet } from 'react-native-elements'
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar, Pressable, Alert, TouchableOpacity, Platform, } from "react-native";
+import { Avatar, ListItem, Divider } from 'react-native-elements'
 import BottomTabs, { bottomTabIcons } from "../component/home/BottomTabs";
 import ImagePicker from "../component/ImagePicker";
-import { auth } from "../firebase";
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "My Account",
-    icon: 'account' ,
-    data: ["Name", "IC", "Gender", 'Edit Profile']
-  },
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bb",
-    title: "Notification",
-    data: ['Push Notification']
-  },
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bc",
-    title: "Support",
-    data: ["Tenant", "Landlord", "Staff"]
-  },
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bd",
-    title: "About Us",
-    data: ["Term of Service", "Contact Us", 'Privacy Policy']
-  },
-];
+import { auth, db } from "../firebase";
+
 
     // display item in flatlist
     const Item = ({ item, onPress, backgroundColor, textColor }) => (
       <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
         <Text style={styles.title}>{item.title}</Text>
+        {/* <Text style={styles.title}>{item.data}</Text> */}
+        {/* <Text style={styles.title}>{item.data}</Text> */}
       </TouchableOpacity>
     );
 
     
-    const ProfileScreen = ({navigation}) => {
+const ProfileScreen = ({navigation}) => {
       const [expanded, setExpanded] = React.useState(false)
+      const [user, setUser] = React.useState([])
+      const [latestProfilePic, setLatestProfilePic] = React.useState(auth?.currentUser?.photoURL)
+
       const handlePress = () => setExpanded(!expanded)
-      
-      // const [isSwitchOn, setIsSwitchOn] = React.useState(false)
-      // const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn)
       
       const [selectedId, setSelectedId] = useState(null)
       
       const [isVisible, setIsVisible] = useState(false);
       const handleOnClose = () => setIsVisible(!isVisible);
 
-
-  // from bottomshet punya data
-  // const list = [
-  //   { title: 'Take Photo' },
-  //   { title: 'Choose Image from gallery', 
-  //     onPress: () => PickImage
-  //   },
-  //   {
-  //     title: 'Cancel',
-  //     containerStyle: { backgroundColor: 'red' },
-  //     titleStyle: { color: 'white' },
-  //     onPress: () => setIsVisible(false),
-  //   },
-  // ];
-
-  const logOutAlert = () =>
-    Alert.alert(
-        "Log Out?",
-      "You sure want to Log Out?",
-      [
+      const DATA = [
         {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
+          id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+          title: "My Account",
+          screen: 'Edit Profile',
+          icon: 'account' ,
+          data: user,
+          // data: {name : user.name , email : user.email, ic : user.ic, phoneNo : user.phoneNo,},
+          // data: [{name : user.name , email : user.email}, user.ic, user.phoneNo, gender],
         },
-        { text: "OK", onPress: () => signOutUser() && console.log("ok Pressed")}
-      ]
-    );
+        {
+          id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bb",
+          title: "Notification",
+          screen: 'Notification',
+          data: ['Push Notification']
+        },
+        {
+          id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bc",
+          title: "Support",
+          screen: 'Support',
+          data: ["Tenant", "Landlord", "Staff"]
+        },
+        {
+          id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bd",
+          title: "About Us",
+          screen: 'About Us',
+          data: ["Term of Service", "Contact Us", 'Privacy Policy']
+        },
+      ];
 
-    const signOutUser = () => {
+      const logOutAlert = () =>
+        Alert.alert(
+            "Log Out?",
+          "You sure want to Log Out?",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+            },
+            { text: "OK", onPress: () => signOutUser() && console.log("ok Pressed")}
+          ]
+        );
+
+        const signOutUser = () => {
+          
+          // change authenthication state
+          auth.signOut().then( () => {
+              navigation.replace("Login")
+          })
+        }
+
+        //re rendering the flatlist
+        const renderItem = ({ item }) =>  {
+          const backgroundColor = item.id === selectedId ? "#CCE3DE" : "#16324F";
+          const color = item.id === selectedId ? 'white' : 'black';
+          return (
+            <Item 
+              item={item} 
+              title={item.title}
+              onPress={() => (setSelectedId(item.id) , navigation.navigate(item.screen, item.data ))}
+              backgroundColor={{ backgroundColor }}
+              textColor={{ color }}
+              />
+            // {item.title === 'Notification' ? <Switch style={{ position: 'absolute', right: 20, top: 40 }} value={isSwitchOn} onValueChange={onToggleSwitch} /> : null}
+          );
+        }
+
+        // useEffect(() => {
+        //   const dbRef = db.collection('users').doc(auth.currentUser.uid)
+        //   dbRef.get().then((doc)=> setUser(doc.data()))
+        // }, []);
+        
+        async function getDoc() {
+          const snapshot = await db.collection('users').doc(auth.currentUser.uid).get();
+          setUser(snapshot.data())
+        }
+
+        useEffect(() => {
+            getDoc()
+          }, [navigation]);
       
-      // change authenthication state
-      auth.signOut().then( () => {
-          navigation.replace("Login")
-      })
-  }
-
-  //re rendering the flatlist
-  const renderItem = ({ item }) =>  {
-    const backgroundColor = item.id === selectedId ? "#CCE3DE" : "#16324F";
-    const color = item.id === selectedId ? 'white' : 'black';
-    return (
-      <Item 
-        item={item} 
-        title={item.title}
-        onPress={() => setSelectedId(item.id)}
-        backgroundColor={{ backgroundColor }}
-        textColor={{ color }}
-        />
-      // {item.title === 'Notification' ? <Switch style={{ position: 'absolute', right: 20, top: 40 }} value={isSwitchOn} onValueChange={onToggleSwitch} /> : null}
-    );
-  }
-
-
-  return(
+      // get the second name from username fullname    
+      let sec = auth.currentUser.displayName?.split(" ")    
+return(
       <SafeAreaView style={styles.container}>
         <View>
         <ListItem>
@@ -111,17 +121,18 @@ const DATA = [
             size= 'xlarge'
             activeOpacity={0.7}
             rounded
-            title= 'MF'
-            source={{ uri: auth?.currentUser?.photoURL || 'https://wallpaperaccess.com/full/3421978.jpg' }}
+            title= {auth.currentUser?.displayName?.charAt(0) + sec[1]?.charAt(0)}
+            source={{ uri: latestProfilePic || 'NA' }}
+            
             />
         </TouchableOpacity>
-
+        {/* {console.log(auth.currentUser.displayName.split(''))} */}
         <ListItem.Content > 
-            <ListItem.Title>Muhammad Faidhi</ListItem.Title>
-            <ListItem.Subtitle>Tenant / Landlord</ListItem.Subtitle>
+            <ListItem.Title>{auth.currentUser.displayName}</ListItem.Title>
             <ListItem.Subtitle>{auth.currentUser.email}</ListItem.Subtitle>
-            <ListItem.Subtitle >IC </ListItem.Subtitle>
-            <ListItem.Subtitle>Male</ListItem.Subtitle>
+            {user.ic? <ListItem.Subtitle >{user.ic} </ListItem.Subtitle>: null}
+            {user.phoneNo? <ListItem.Subtitle >{user.phoneNo} </ListItem.Subtitle>: null}
+            {user.gender? <ListItem.Subtitle >{user.gender} </ListItem.Subtitle>: <ListItem.Subtitle >Male/Female </ListItem.Subtitle>}
             <ListItem.Subtitle>
             <View style={{marginTop : 5}}>
                 <Pressable style={styles.buttonLogOut} >
@@ -136,51 +147,18 @@ const DATA = [
           </ListItem>
         </View>
 
-      <FlatList
-      data={DATA}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-      extraData={selectedId}
-      />
-      {/* <FlatList
-      data={DATA}
-      renderItem={({ item }) =>  {
-        const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#16324F";
-        const color = item.id === selectedId ? 'white' : 'black';
-        return (
-          <Item 
-            item={item} 
-            title={item.title}
-            onPress={() => setSelectedId(item.id)}
-            backgroundColor={{ backgroundColor }}
-            textColor={{ color }}
-            />
-        );
-      }}
-      keyExtractor={(item) => item.id}
-      extraData={selectedId}
-      /> */}
-  
-        {/* <Switch value={isSwitchOn} onValueChange={onToggleSwitch} /> */}
-      {/* <Switch style={{ position: 'absolute', right: 20, top: 40 }} value={isSwitchOn} onValueChange={onToggleSwitch} /> */}
-
-    {/* <BottomSheet
-          isVisible={isVisible}
-          containerStyle={{ backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)' }}
-        >
-          <ImagePicker2 isVisible={isVisible} onClose={handleOnClose}/>
-          {list.map((l, i) => (
-            <ListItem key={i} containerStyle={l.containerStyle} onPress={l.onPress}>
-              <ListItem.Content>
-                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-          ))}
-        </BottomSheet> */}
       
-      <ImagePicker isVisible={isVisible} onClose={handleOnClose}/>
+        <FlatList
+          data={DATA}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          extraData={selectedId}
+        />
         
-      <BottomTabs icons ={bottomTabIcons} navigation={navigation}/>
+        <ImagePicker isVisible={isVisible} onClose={handleOnClose} setLatestProfilePic={setLatestProfilePic}/>
+    
+        <Divider style={{marginTop: 10, marginBottom: 75}}/>  
+        <BottomTabs icons ={bottomTabIcons} navigation={navigation}/>
       </SafeAreaView>
 )}
 
